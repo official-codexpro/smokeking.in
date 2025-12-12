@@ -1,0 +1,262 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}My Coupons - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.coupon-usage-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.coupon-usage-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.coupon-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    padding: 15px 20px;
+}
+
+.coupon-code-used {
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.savings-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4caf50;
+}
+
+.usage-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.order-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.order-link:hover {
+    text-decoration: underline;
+}
+
+.no-usage {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.stats-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffeb3b;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-history"></i> My Coupon Usage</h2>
+                <a href="{% url 'available_coupons' %}" class="btn btn-primary">
+                    <i class="fas fa-tags"></i> Browse Coupons
+                </a>
+            </div>
+
+            {% if coupon_usages %}
+                <!-- Usage Statistics -->
+                {% if coupon_usages.paginator.count > 0 %}
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="stats-card text-center">
+                                <div class="stat-value">{{ coupon_usages.paginator.count }}</div>
+                                <div class="stat-label">Total Coupons Used</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-card text-center">
+                                {% with total_savings=coupon_usages.paginator.object_list|length %}
+                                    {% for usage in coupon_usages.paginator.object_list %}
+                                        {% if forloop.first %}
+                                            {% with total_saved=0 %}
+                                                {% for u in coupon_usages.paginator.object_list %}
+                                                    {% with total_saved=total_saved|add:u.discount_amount %}
+                                                    {% endwith %}
+                                                {% endfor %}
+                                                <div class="stat-value">₹{% widthratio total_saved 1 1 %}</div>
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                                <div class="stat-label">Total Savings</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-card text-center">
+                                <div class="stat-value">
+                                    {% if coupon_usages %}
+                                        ₹{% widthratio coupon_usages.0.discount_amount 1 1 %}
+                                    {% else %}
+                                        ₹0
+                                    {% endif %}
+                                </div>
+                                <div class="stat-label">Best Single Saving</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Coupon Usage History -->
+                {% for usage in coupon_usages %}
+                    <div class="coupon-usage-card">
+                        <div class="coupon-header">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <div class="coupon-code-used">{{ usage.coupon.code }}</div>
+                                    <small>{{ usage.coupon.get_discount_display }}</small>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <div class="savings-amount">₹{{ usage.discount_amount|floatformat:2 }}</div>
+                                    <small>You Saved</small>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <div class="usage-date">
+                                        <i class="fas fa-calendar"></i>
+                                        {{ usage.used_at|date:"M d, Y" }}
+                                    </div>
+                                    <small>{{ usage.used_at|date:"g:i A" }}</small>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    {% if usage.order %}
+                                        <a href="#" class="order-link">
+                                            <i class="fas fa-receipt"></i>
+                                            Order #{{ usage.order.id }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-light">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            Cart Usage
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    {% if usage.coupon.description %}
+                                        <p class="mb-1"><strong>Description:</strong> {{ usage.coupon.description }}</p>
+                                    {% endif %}
+                                    <p class="mb-1"><strong>Coupon Type:</strong> {{ usage.coupon.get_coupon_type_display }}</p>
+                                    <p class="mb-0"><strong>Discount Type:</strong> {{ usage.coupon.get_discount_type_display }}</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    {% if usage.order %}
+                                        <div class="text-muted">
+                                            <small>
+                                                <i class="fas fa-info-circle"></i>
+                                                Order Status:
+                                                <span class="badge badge-info">{{ usage.order.get_status_display }}</span>
+                                            </small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- Pagination -->
+                {% if coupon_usages.has_other_pages %}
+                    <nav aria-label="Coupon usage pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if coupon_usages.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ coupon_usages.previous_page_number }}">Previous</a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in coupon_usages.paginator.page_range %}
+                                {% if coupon_usages.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > coupon_usages.number|add:'-3' and num < coupon_usages.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if coupon_usages.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ coupon_usages.next_page_number }}">Next</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="no-usage">
+                    <i class="fas fa-ticket-alt fa-3x mb-3" style="color: #ddd;"></i>
+                    <h4>No coupon usage yet</h4>
+                    <p>Start shopping and use coupons to save money!</p>
+                    <a href="{% url 'available_coupons' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-tags"></i> Browse Available Coupons
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add any JavaScript functionality for this page
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate statistics cards on load
+    const statCards = document.querySelectorAll('.stats-card');
+    statCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 200);
+    });
+});
+</script>
+{% endblock %}

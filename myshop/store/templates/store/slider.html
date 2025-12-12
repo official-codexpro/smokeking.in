@@ -1,0 +1,217 @@
+<!-- Image Slider Banner -->
+<div class="relative w-full overflow-hidden">
+  <!-- Slider Container -->
+  <div class="slider-container relative w-full">
+    <!-- Mobile Slides (visible only on mobile) -->
+    <div class="slide mobile-slide active relative w-full md:hidden">
+      <img src="/gallery/gallery/banner/diwali_mobile.webp" alt="Diwali Special Offer" class="w-full h-auto">
+    </div>
+
+    <div class="slide mobile-slide absolute top-0 left-0 w-full opacity-0 md:hidden">
+      <img src="/gallery/gallery/banner/mobile/smokeking_mb (1).webp" alt="Mobile Banner Slide 1" class="w-full h-auto">
+    </div>
+
+    <div class="slide mobile-slide absolute top-0 left-0 w-full opacity-0 md:hidden">
+      <img src="/gallery/gallery/banner/mobile/smokeking_mb (2).webp" alt="Mobile Banner Slide 2" class="w-full h-auto">
+    </div>
+
+    <div class="slide mobile-slide absolute top-0 left-0 w-full opacity-0 md:hidden">
+      <img src="/gallery/gallery/banner/mobile/smokeking_mb (3).webp" alt="Mobile Banner Slide 3" class="w-full h-auto">
+    </div>
+
+    <div class="slide mobile-slide absolute top-0 left-0 w-full opacity-0 md:hidden">
+      <img src="/gallery/gallery/banner/mobile/smokeking_mb (4).webp" alt="Mobile Banner Slide 4" class="w-full h-auto">
+    </div>
+
+    <div class="slide mobile-slide absolute top-0 left-0 w-full opacity-0 md:hidden">
+      <img src="/gallery/gallery/banner/mobile/smokeking_mb (5).webp" alt="Mobile Banner Slide 5" class="w-full h-auto">
+    </div>
+
+    <div class="slide mobile-slide absolute top-0 left-0 w-full opacity-0 md:hidden">
+      <img src="/gallery/gallery/banner/mobile/smokeking_mb (6).webp" alt="Mobile Banner Slide 6" class="w-full h-auto">
+    </div>
+
+    <div class="slide mobile-slide absolute top-0 left-0 w-full opacity-0 md:hidden">
+      <img src="/gallery/gallery/banner/mobile/smokeking_mb (7).webp" alt="Mobile Banner Slide 7" class="w-full h-auto">
+    </div>
+
+    <!-- Desktop Slides (visible on tablet and desktop) -->
+    <div class="slide desktop-slide active hidden md:block relative w-full">
+      <a href="/products/?category=premium_lighters" class="block w-full">
+        <img src="/gallery/gallery/banner/ghost/1.webp" alt="Lighter Collection" class="w-full h-auto">
+      </a>
+    </div>
+
+    <div class="slide desktop-slide absolute top-0 left-0 w-full opacity-0 hidden md:block">
+      <a href="/products/?category=cigarette-case" class="block w-full">
+        <img src="/gallery/gallery/banner/ghost/2.webp" alt="Cigarette Case Collection" class="w-full h-auto">
+      </a>
+    </div>
+
+    <div class="slide desktop-slide absolute top-0 left-0 w-full opacity-0 hidden md:block">
+      <a href="/products/?category=premium_cutters" class="block w-full">
+        <img src="/gallery/gallery/banner/ghost/3.webp" alt="Cigar Cutter Collection" class="w-full h-auto">
+      </a>
+    </div>
+
+    <div class="slide desktop-slide absolute top-0 left-0 w-full opacity-0 hidden md:block">
+      <a href="/products/?category=premium_cigarette_ring" class="block w-full">
+        <img src="/gallery/gallery/banner/ghost/4.webp" alt="Cigarette Ring Collection" class="w-full h-auto">
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation Arrows -->
+  <button class="slider-nav prev absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+  </button>
+  <button class="slider-nav next absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </button>
+
+  <!-- Slide Indicators -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
+    <!-- Desktop indicators (4 slides) -->
+    <button class="indicator active w-3 h-3 bg-white rounded-full opacity-70 hover:opacity-100 transition-opacity hidden md:block" data-slide="0"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity hidden md:block" data-slide="1"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity hidden md:block" data-slide="2"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity hidden md:block" data-slide="3"></button>
+
+    <!-- Mobile indicators (8 slides) -->
+    <button class="indicator active w-3 h-3 bg-white rounded-full opacity-70 hover:opacity-100 transition-opacity md:hidden" data-slide="0"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity md:hidden" data-slide="1"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity md:hidden" data-slide="2"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity md:hidden" data-slide="3"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity md:hidden" data-slide="4"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity md:hidden" data-slide="5"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity md:hidden" data-slide="6"></button>
+    <button class="indicator w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100 transition-opacity md:hidden" data-slide="7"></button>
+  </div>
+</div>
+
+<!-- Slider CSS and JavaScript -->
+<style>
+.slide {
+  transition: opacity 0.8s ease-in-out;
+  pointer-events: none;
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.indicator.active {
+  opacity: 1;
+  background-color: #FDE047;
+}
+
+@media (max-width: 768px) {
+  .slider-nav {
+    padding: 0.5rem;
+  }
+
+  .slider-nav svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const isMobile = window.innerWidth < 768;
+  const slides = document.querySelectorAll(isMobile ? '.mobile-slide' : '.desktop-slide');
+  const indicators = document.querySelectorAll('.indicator');
+  const prevBtn = document.querySelector('.slider-nav.prev');
+  const nextBtn = document.querySelector('.slider-nav.next');
+  let currentSlide = 0;
+  let slideInterval;
+
+  function showSlide(index) {
+    // Hide all slides
+    slides.forEach(slide => {
+      slide.classList.remove('active');
+      slide.style.opacity = '0';
+    });
+
+    // Remove active class from all indicators
+    indicators.forEach(indicator => {
+      indicator.classList.remove('active');
+    });
+
+    // Show current slide
+    slides[index].classList.add('active');
+    slides[index].style.opacity = '1';
+    if (indicators[index]) {
+      indicators[index].classList.add('active');
+    }
+
+    currentSlide = index;
+  }
+
+  function nextSlide() {
+    const next = (currentSlide + 1) % slides.length;
+    showSlide(next);
+  }
+
+  function prevSlide() {
+    const prev = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
+    showSlide(prev);
+  }
+
+  function startAutoSlide() {
+    slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+  }
+
+  function stopAutoSlide() {
+    clearInterval(slideInterval);
+  }
+
+  // Event listeners
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      stopAutoSlide();
+      nextSlide();
+      startAutoSlide();
+    });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      stopAutoSlide();
+      prevSlide();
+      startAutoSlide();
+    });
+  }
+
+  // Indicator click events
+  indicators.forEach((indicator, index) => {
+    if (index < slides.length) {
+      indicator.addEventListener('click', () => {
+        stopAutoSlide();
+        showSlide(index);
+        startAutoSlide();
+      });
+    }
+  });
+
+  // Pause auto-slide on hover/touch
+  const sliderContainer = document.querySelector('.slider-container');
+  if (sliderContainer) {
+    sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+    sliderContainer.addEventListener('mouseleave', startAutoSlide);
+    sliderContainer.addEventListener('touchstart', stopAutoSlide);
+    sliderContainer.addEventListener('touchend', () => {
+      setTimeout(startAutoSlide, 3000);
+    });
+  }
+
+  // Start auto-slide
+  startAutoSlide();
+});
+</script>
