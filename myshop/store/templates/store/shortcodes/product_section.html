@@ -1,0 +1,210 @@
+{% load home_filters %}
+
+{% with category=categories|get_category_by_slug:category_slug %}
+{% if category %}
+{% with products=category|active_products|slice_items:count %}
+<style>
+.hover-sequence-container {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background-color: #ffffff;
+    opacity: 0;
+    overflow: hidden;
+    transition: opacity 0.4s ease;
+}
+
+.group:hover .hover-sequence-container {
+    opacity: 1;
+}
+
+@keyframes fixedStackSlide {
+    0% { transform: translateX(100%); z-index: 40; }
+    /* Fast Slide-in (10% of total time) */
+    10% { transform: translateX(0%); z-index: 40; }
+    /* Stay in Center */
+    25% { transform: translateX(0%); z-index: 40; }
+    /* Drop to Background behind the next image */
+    26% { z-index: 20; }
+    100% { transform: translateX(0%); z-index: 20; }
+}
+
+.slide-animation-img {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: translateX(100%);
+    background-color: #ffffff;
+    will-change: transform;
+}
+
+.group:hover .slide-animation-img {
+    /* Agar 4 images hain toh total 8s cycle (2s per image) */
+    animation: fixedStackSlide 8s infinite linear;
+}
+
+.hover-sequence-container{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+pointer-events:none;
+}
+
+.slide-animation-img{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:contain;
+animation: hoverSequence 2s infinite;
+opacity:0;
+}
+
+@keyframes hoverSequence{
+
+0%{opacity:0}
+20%{opacity:1}
+40%{opacity:0}
+
+}
+</style>
+<section class="relative bg-gray-100 pb-4 pt-12 min-[2100px]:px-[10%] overflow-hidden">
+
+  <div class="relative z-20 text-center mb-10">
+    <span class="text-[#d4af37] text-[10px] uppercase tracking-[0.5em] font-bold mb-3 block">Exclusive Selection</span>
+   <h2 
+  class="text-2xl md:text-4xl text-gray-900 tracking-widest uppercase"
+  style="font-weight: 700; display: block;"
+>
+ Premium {{ category.name }}
+</h2>
+    <div class="mt-4 w-16 h-[1px] bg-[#d4af37] mx-auto"></div>
+  </div>
+
+  <div class="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-1 md:gap-2 px-1 md:px-4">
+
+    {% for product in products %}
+    {% if 'inspired' not in product.get_display_title|lower %}
+
+    <div class="group relative flex flex-col bg-white overflow-hidden transition-all duration-500 border border-black-700 hover:border-[#d4af37]/30 hover:shadow-2xl">
+      
+    <a href="{% url 'product_detail' product.slug %}" class="group block relative" style="text-decoration: none; position: relative; display: block;">
+  <div class="relative aspect-square overflow-hidden bg-white flex items-center justify-center p-4 sm:p-8" 
+       style="position: relative; aspect-ratio: 1/1; overflow: hidden; background-color: #ffffff; display: flex; align-items: center; justify-content: center;">
+    
+   {% if product.images.first or product.image %}
+      <img src="{% if product.images.first %}{{ product.images.first.image.url }}{% else %}{{ product.image.url }}{% endif %}"
+           alt="{{ product.name }}"
+           loading="lazy"
+           class="main-image transition-all duration-700 ease-in-out
+group-hover:scale-105 group-hover:-translate-x-full group-hover:opacity-0
+group-active:scale-105 group-active:-translate-x-full group-active:opacity-0"
+           style="width: 100%; height: 100%; object-fit: contain; display: block; z-index: 5;">
+
+      {% if product.gif %}
+        <img src="{{ product.gif.url }}"
+             class="absolute inset-0 w-full h-full object-contain sm:p-8 opacity-0
+group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-700"
+             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 20; background: white;"
+             loading="lazy">
+    {% elif product.images.all.count > 1 %}
+  <div class="hover-sequence-container">
+    {% for img in product.images.all %}
+      <img src="{{ img.image.url }}"
+           alt="sequence"
+           class="slide-animation-img sm:p-8 opacity-0
+group-hover:opacity-100 group-active:opacity-100"
+           style="animation-delay: {{ forloop.counter0|add:forloop.counter0 }}s;">
+    {% endfor %}
+  </div>
+{% endif %}
+
+    {% else %}
+      <div style="text-align: center; color: #d1d5db; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;">
+        Image Pending
+      </div>
+    {% endif %}
+
+    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+         style="position: absolute; inset: 0; background: linear-gradient(to top right, rgba(255,255,255,0), rgba(255,255,255,0.1), rgba(255,255,255,0)); pointer-events: none; z-index: 25;">
+    </div>
+  </div>
+</a>
+
+  <div class="w-full block" style="background-color: #f8f8f8; margin: 0; padding: 0; line-height: 0;">
+    <div class="w-full h-[1px]" style="background-color: rgba(0, 0, 0, 0.15);"></div>
+</div>
+
+     <div class="px-4 py-3 md:px-5 md:py-4 bg-white flex flex-col flex-grow">
+  <a href="{% url 'product_detail' product.slug %}" class="block">
+    <h3 class="text-xs sm:text-sm md:text-base text-gray-900 font-semibold mb-1 line-clamp-1 tracking-wider uppercase group-hover:text-[#d4af37] transition-colors leading-tight">
+      {{ product.get_display_title }}
+    </h3>
+  </a>
+
+  <div class="flex items-center justify-between mt-1">
+    <div class="flex flex-col">
+      <div class="flex items-center gap-0.5 leading-none">
+        <span class="text-[9px] sm:text-[10px] text-[#d4af37]">★ ★ ★ ★ ★</span>
+      </div>
+      <span class="text-[8px] sm:text-[9px] text-black font-bold tracking-widest mt-0.5 uppercase">
+        ({{ product.reviews.count|default:"10" }} Reviews)
+      </span>
+    </div>
+    
+    <div class="text-sm sm:text-base md:text-lg font-bold text-gray-900 tracking-tighter leading-none">
+      ₹{{ product.price }}
+    </div>
+  </div>
+
+
+        {% comment %} <div class="flex flex-col gap-2 mt-auto">
+          <form method="post" action="{% url 'add_to_cart' product.id %}?next={{ request.path }}">
+            {% csrf_token %}
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" name="action" value="add"
+                    class="w-full bg-white border border-gray-900 text-gray-900 py-2 text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:bg-black hover:text-white">
+              Add To Cart
+            </button>
+          </form>
+        </div> {% endcomment %}
+      </div>
+    </div>
+
+    {% endif %}
+    {% endfor %}
+
+  </div>
+
+<div style="text-align: center; padding: 60px 0;">
+    <a href="/products/?category={{ category.slug }}" style="text-decoration: none; display: inline-block;">
+        <button style="background-color: #111111; 
+                       color: #ffffff; 
+                       border: 1px solid #111111; 
+                       padding: 14px 50px; 
+                       font-size: 11px; 
+                       font-weight: 700; 
+                       text-transform: uppercase; 
+                       letter-spacing: 0.4em; 
+                       cursor: pointer; 
+                       transition: all 0.3s ease;
+                       border-radius: 0px;"
+                onmouseover="this.style.backgroundColor='#f59e0b'; this.style.borderColor='#f59e0b'; this.style.color='#000000';"
+                onmouseout="this.style.backgroundColor='#111111'; this.style.borderColor='#111111'; this.style.color='#ffffff';">
+            VIEW ALL
+        </button>
+    </a>
+</div>
+
+</section>
+
+{% endwith %}
+{% endif %}
+{% endwith %}

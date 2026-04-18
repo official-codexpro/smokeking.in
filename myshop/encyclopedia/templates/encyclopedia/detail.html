@@ -1,0 +1,517 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.brand }} {{ product.name }} – Specs, Content & Price | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{% if product.meta_description %}{{ product.meta_description }}{% else %}Complete specifications for {{ product.brand }} {{ product.name }}: nicotine {{ product.nicotine_mg }}mg, tar {{ product.tar_mg }}mg, India price ₹{{ product.price_india_inr }}. Learn everything about this {{ product.get_product_type_display|lower }}.{% endif %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ product.brand }} {{ product.name }} – Complete Specifications",
+  "description": "{% if product.meta_description %}{{ product.meta_description }}{% else %}Complete specifications for {{ product.brand }} {{ product.name }}: nicotine {{ product.nicotine_mg }}mg, tar {{ product.tar_mg }}mg. Full encyclopedia entry.{% endif %}",
+  "author": { "@type": "Organization", "name": "{{ SITE_NAME }}" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ SITE_NAME }}",
+    "url": "https://www.smokeking.in"
+  },
+  "mainEntityOfPage": "https://www.smokeking.in{{ request.get_full_path }}",
+  "dateModified": "{{ product.updated_at|date:'Y-m-d' }}"{% if product.image %},
+  "image": "https://www.smokeking.in{{ product.image.url }}"{% endif %}
+}
+</script>
+{% if product.price_india_inr %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.brand }} {{ product.name }}",
+  "description": "{{ product.description|truncatewords:40 }}",
+  "brand": { "@type": "Brand", "name": "{{ product.brand }}" },
+  "countryOfOrigin": "{{ product.country_of_origin }}",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "INR",
+    "price": "{{ product.price_india_inr }}",
+    "availability": "https://schema.org/InStock",
+    "url": "https://www.smokeking.in{{ request.get_full_path }}"
+  }
+  {% if product.nicotine_mg or product.strength %},
+  "additionalProperty": [
+    {% if product.nicotine_mg %}{"@type":"PropertyValue","name":"Nicotine","value":"{{ product.nicotine_mg }} mg"}{% if product.tar_mg %},{% endif %}{% endif %}
+    {% if product.tar_mg %}{"@type":"PropertyValue","name":"Tar","value":"{{ product.tar_mg }} mg"}{% endif %}
+    {% if product.strength %},{"@type":"PropertyValue","name":"Strength","value":"{{ product.get_strength_display }}"}{% endif %}
+  ]
+  {% endif %}
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="enc-wrap min-h-screen">
+{% include 'encyclopedia/partials/theme_toggle.html' %}
+
+  <!-- Compare Bar -->
+  <div id="compare-bar" class="{% if compare_count == 0 %}hidden{% endif %} fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-amber-500/50 shadow-2xl">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <span class="text-amber-400 font-semibold text-sm">Compare (<span id="compare-bar-count">{{ compare_count }}</span>/3)</span>
+      <div class="flex gap-3">
+        <a href="{% url 'encyclopedia:compare' %}" class="bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold text-sm px-5 py-2 rounded-lg transition-colors">Compare Now</a>
+        <button onclick="clearCompare()" class="text-gray-400 hover:text-white text-sm px-3 py-2 transition-colors">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breadcrumb -->
+  <div class="bg-gray-900 border-b border-gray-800 py-4">
+    <div class="max-w-6xl mx-auto px-4">
+      <nav class="flex items-center gap-2 text-sm text-gray-400">
+        <a href="{% url 'encyclopedia:index' %}" class="hover:text-amber-400 transition-colors">Encyclopedia</a>
+        <span>/</span>
+        <a href="{% url 'encyclopedia:list' %}?type={{ product.product_type }}" class="hover:text-amber-400 transition-colors">{{ product.get_product_type_display }}s</a>
+        <span>/</span>
+        <span class="text-white">{{ product.brand }} {{ product.name }}</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Product Hero -->
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- Left: Image + Quick Actions -->
+      <div class="lg:col-span-1">
+        <div class="bg-gray-800/60 border border-gray-700 rounded-2xl overflow-hidden sticky top-24">
+          <!-- Image / Placeholder -->
+          <div class="bg-gradient-to-br from-gray-700 to-gray-800 h-64 flex items-center justify-center">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+            {% else %}
+            <span class="text-9xl opacity-50">{{ product.get_type_display_icon }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Pricing Card -->
+          <div class="p-5">
+            <div class="grid grid-cols-2 gap-3 mb-5">
+              {% if product.price_india_inr %}
+              <div class="bg-amber-900/30 border border-amber-800/50 rounded-xl p-3 text-center">
+                <div class="text-xs text-amber-400/80 mb-1">India Price</div>
+                <div class="text-amber-400 font-bold text-lg">&#8377;{{ product.price_india_inr }}</div>
+                <div class="text-gray-400 text-xs">per {{ product.pack_size }} units</div>
+              </div>
+              {% endif %}
+              {% if product.price_international_usd %}
+              <div class="bg-gray-700/50 border border-gray-600 rounded-xl p-3 text-center">
+                <div class="text-xs text-gray-400 mb-1">Intl. Price</div>
+                <div class="text-white font-bold text-lg">${{ product.price_international_usd }}</div>
+                <div class="text-gray-400 text-xs">per {{ product.pack_size }} units</div>
+              </div>
+              {% endif %}
+            </div>
+            {% if product.get_price_per_stick_inr %}
+            <div class="text-center text-sm text-gray-400 mb-5">
+              &#8377;{{ product.get_price_per_stick_inr }} per stick/unit
+            </div>
+            {% endif %}
+
+            <!-- Compare Button -->
+            <button
+              id="compare-toggle-btn"
+              onclick="toggleCompare(event, '{{ product.slug }}', {{ product.pk }}, '{{ product.brand }} {{ product.name }}')"
+              class="w-full font-semibold py-3 px-4 rounded-xl text-sm transition-all duration-200
+                {% if in_compare %}bg-amber-500/20 border-2 border-amber-500 text-amber-400{% else %}border-2 border-gray-600 text-gray-300 hover:border-amber-500 hover:text-amber-400{% endif %}">
+              {% if in_compare %}
+              ✓ In Compare List – Click to Remove
+              {% else %}
+              + Add to Compare (max 3)
+              {% endif %}
+            </button>
+
+            {% if compare_count >= 1 %}
+            <a href="{% url 'encyclopedia:compare' %}" class="block text-center mt-3 text-amber-400 hover:text-amber-300 text-sm transition-colors">
+              View Compare ({{ compare_count }}/3) &rarr;
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Full Details -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Title Block -->
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full
+              {% if product.product_type == 'cigarette' %}bg-blue-900/60 text-blue-300
+              {% elif product.product_type == 'cigar' %}bg-amber-900/60 text-amber-300
+              {% elif product.product_type == 'lighter' %}bg-orange-900/60 text-orange-300
+              {% else %}bg-gray-700 text-gray-300{% endif %}">
+              {{ product.get_type_display_icon }} {{ product.get_product_type_display }}
+            </span>
+            {% if product.country_of_origin %}
+            <span class="text-xs bg-gray-700 text-gray-300 px-3 py-1 rounded-full">{{ product.country_of_origin }}</span>
+            {% endif %}
+            {% if product.year_introduced %}
+            <span class="text-xs text-gray-400">Since {{ product.year_introduced }}</span>
+            {% endif %}
+          </div>
+          <h1 class="text-3xl md:text-4xl font-bold text-white mb-1">{{ product.name }}</h1>
+          <div class="text-amber-400 font-semibold text-lg mb-1">{{ product.brand }}</div>
+          {% if product.manufacturer and product.manufacturer != product.brand %}
+          <div class="text-gray-400 text-sm">by {{ product.manufacturer }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Description -->
+        {% if product.description %}
+        <div class="bg-gray-800/40 border border-gray-700 rounded-xl p-5">
+          <h2 class="text-white font-semibold mb-3">About</h2>
+          <p class="text-gray-300 text-sm leading-relaxed">{{ product.description }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Substance Content (cigarette/cigar) -->
+        {% if product.nicotine_mg or product.tar_mg or product.co_mg %}
+        <div class="bg-red-950/20 border border-red-900/40 rounded-xl p-5">
+          <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            Substance Content (per stick)
+          </h2>
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            {% if product.nicotine_mg %}
+            <div class="text-center">
+              <div class="text-2xl font-bold text-red-400">{{ product.nicotine_mg }} <span class="text-lg">mg</span></div>
+              <div class="text-gray-400 text-xs mt-1">Nicotine</div>
+              <div class="mt-2 bg-gray-700 rounded-full h-2">
+                <div class="bg-red-500 rounded-full h-2" style="width: {% widthratio product.nicotine_mg 2 100 %}%"></div>
+              </div>
+            </div>
+            {% endif %}
+            {% if product.tar_mg %}
+            <div class="text-center">
+              <div class="text-2xl font-bold text-orange-400">{{ product.tar_mg }} <span class="text-lg">mg</span></div>
+              <div class="text-gray-400 text-xs mt-1">Tar</div>
+              <div class="mt-2 bg-gray-700 rounded-full h-2">
+                <div class="bg-orange-500 rounded-full h-2" style="width: {% widthratio product.tar_mg 20 100 %}%"></div>
+              </div>
+            </div>
+            {% endif %}
+            {% if product.co_mg %}
+            <div class="text-center">
+              <div class="text-2xl font-bold text-yellow-400">{{ product.co_mg }} <span class="text-lg">mg</span></div>
+              <div class="text-gray-400 text-xs mt-1">Carbon Monoxide</div>
+              <div class="mt-2 bg-gray-700 rounded-full h-2">
+                <div class="bg-yellow-500 rounded-full h-2" style="width: {% widthratio product.co_mg 20 100 %}%"></div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% if product.other_substances %}
+          <div>
+            <div class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-2">Other Substances</div>
+            <div class="flex flex-wrap gap-2">
+              {% for substance in product.other_substances.splitlines %}
+              {% if substance %}
+              <span class="text-xs bg-red-900/30 border border-red-800/50 text-red-300 px-2 py-1 rounded-full">{{ substance }}</span>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          <p class="text-gray-500 text-xs mt-4">* Warning: All tobacco products are harmful to health. These figures are for informational purposes only.</p>
+        </div>
+        {% endif %}
+
+        <!-- Specifications Table -->
+        <div class="bg-gray-800/40 border border-gray-700 rounded-xl overflow-hidden">
+          <div class="bg-gray-700/50 px-5 py-3">
+            <h2 class="text-white font-semibold">Specifications</h2>
+          </div>
+          <div class="divide-y divide-gray-700/50">
+            {% if product.model %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Model</span>
+              <span class="text-white text-sm">{{ product.model }}</span>
+            </div>
+            {% endif %}
+            {% if product.country_of_origin %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Country of Origin</span>
+              <span class="text-white text-sm">{{ product.country_of_origin }}</span>
+            </div>
+            {% endif %}
+            {% if product.year_introduced %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Year Introduced</span>
+              <span class="text-white text-sm">{{ product.year_introduced }}</span>
+            </div>
+            {% endif %}
+            {% if product.length_mm %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Length</span>
+              <span class="text-white text-sm">{{ product.length_mm }} mm</span>
+            </div>
+            {% endif %}
+            {% if product.diameter_mm %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Diameter</span>
+              <span class="text-white text-sm">{{ product.diameter_mm }} mm</span>
+            </div>
+            {% endif %}
+            {% if product.ring_gauge %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Ring Gauge</span>
+              <span class="text-white text-sm">{{ product.ring_gauge }}</span>
+            </div>
+            {% endif %}
+            {% if product.weight_g %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Weight per Stick</span>
+              <span class="text-white text-sm">{{ product.weight_g }} g</span>
+            </div>
+            {% endif %}
+            {% if product.filter_type %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Filter Type</span>
+              <span class="text-white text-sm">{{ product.filter_type }}</span>
+            </div>
+            {% endif %}
+            {% if product.strength %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Strength</span>
+              <span class="text-white text-sm">{{ product.get_strength_display }}</span>
+            </div>
+            {% endif %}
+            {% if product.primary_flavor %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Primary Flavor</span>
+              <span class="text-white text-sm">{{ product.get_primary_flavor_display }}</span>
+            </div>
+            {% endif %}
+
+            <!-- Cigarette-Specific -->
+            {% if product.cigarette_style %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Style</span>
+              <span class="text-white text-sm">{{ product.cigarette_style }}</span>
+            </div>
+            {% endif %}
+            {% if product.pack_type %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Pack Type</span>
+              <span class="text-white text-sm">{{ product.pack_type }}</span>
+            </div>
+            {% endif %}
+
+            <!-- Cigar-Specific -->
+            {% if product.shape %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Shape / Vitola</span>
+              <span class="text-white text-sm">{{ product.shape }}</span>
+            </div>
+            {% endif %}
+            {% if product.wrapper %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Wrapper</span>
+              <span class="text-white text-sm">{{ product.wrapper }}</span>
+            </div>
+            {% endif %}
+            {% if product.binder %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Binder</span>
+              <span class="text-white text-sm">{{ product.binder }}</span>
+            </div>
+            {% endif %}
+            {% if product.filler %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Filler</span>
+              <span class="text-white text-sm">{{ product.filler }}</span>
+            </div>
+            {% endif %}
+            {% if product.smoking_time_min %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Smoking Time</span>
+              <span class="text-white text-sm">~{{ product.smoking_time_min }} minutes</span>
+            </div>
+            {% endif %}
+
+            <!-- Lighter-Specific -->
+            {% if product.material %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Material</span>
+              <span class="text-white text-sm">{{ product.material }}</span>
+            </div>
+            {% endif %}
+            {% if product.fuel_type %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Fuel Type</span>
+              <span class="text-white text-sm">{{ product.fuel_type }}</span>
+            </div>
+            {% endif %}
+            {% if product.ignition_type %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Ignition</span>
+              <span class="text-white text-sm">{{ product.ignition_type }}</span>
+            </div>
+            {% endif %}
+            {% if product.flame_type %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Flame Type</span>
+              <span class="text-white text-sm">{{ product.flame_type }}</span>
+            </div>
+            {% endif %}
+            {% if product.dimensions %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Dimensions</span>
+              <span class="text-white text-sm">{{ product.dimensions }}</span>
+            </div>
+            {% endif %}
+            {% if product.windproof is not None %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Windproof</span>
+              <span class="text-white text-sm">{% if product.windproof %}Yes{% else %}No{% endif %}</span>
+            </div>
+            {% endif %}
+            {% if product.waterproof is not None %}
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Waterproof</span>
+              <span class="text-white text-sm">{% if product.waterproof %}Yes{% else %}No{% endif %}</span>
+            </div>
+            {% endif %}
+
+            <!-- Pack Info -->
+            <div class="flex px-5 py-3">
+              <span class="text-gray-400 text-sm w-44 flex-shrink-0">Pack Size</span>
+              <span class="text-white text-sm">{{ product.pack_size }} units</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flavor Profile -->
+        {% if product.flavor_profile %}
+        <div class="bg-gray-800/40 border border-gray-700 rounded-xl p-5">
+          <h2 class="text-white font-semibold mb-3">Flavor Profile</h2>
+          <p class="text-gray-300 text-sm leading-relaxed">{{ product.flavor_profile }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Tasting Notes -->
+        {% if product.tasting_notes %}
+        <div class="bg-amber-950/20 border border-amber-900/30 rounded-xl p-5">
+          <h2 class="text-white font-semibold mb-3 flex items-center gap-2">
+            <span>✦</span> Tasting Notes
+          </h2>
+          <div class="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{{ product.tasting_notes }}</div>
+        </div>
+        {% endif %}
+
+        <!-- History -->
+        {% if product.history %}
+        <div class="bg-gray-800/40 border border-gray-700 rounded-xl p-5">
+          <h2 class="text-white font-semibold mb-3 flex items-center gap-2">
+            <span>📜</span> History
+          </h2>
+          <p class="text-gray-300 text-sm leading-relaxed">{{ product.history }}</p>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- ═══ SHOP CTA — drives real sales ═══ -->
+    {% if store_products %}
+    <div class="mt-14">
+      <!-- Section header -->
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex-1 h-px bg-gradient-to-r from-amber-500/60 to-transparent"></div>
+        <div class="text-center px-4">
+          <div class="inline-flex items-center gap-2 bg-amber-500 text-gray-900 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-2">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+            Buy from SmokeKing Store
+          </div>
+          <h2 class="text-xl md:text-2xl font-bold text-white">{{ store_cta_headline }}</h2>
+          <p class="text-gray-400 text-sm mt-1">{{ store_cta_sub }}</p>
+        </div>
+        <div class="flex-1 h-px bg-gradient-to-l from-amber-500/60 to-transparent"></div>
+      </div>
+
+      <!-- Store product cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+        {% for sp in store_products %}
+        <a href="{{ sp.get_absolute_url }}" class="group bg-gray-800/60 border border-gray-700 hover:border-amber-500 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-amber-900/20 block">
+          <!-- Image -->
+          <div class="relative bg-gradient-to-br from-gray-700 to-gray-800 h-36 overflow-hidden">
+            {% if sp.image %}
+            <img src="{{ sp.image.url }}" alt="{{ sp.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center">
+              <svg class="w-12 h-12 text-gray-600 group-hover:text-amber-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+            </div>
+            {% endif %}
+            <!-- Discount badge -->
+            {% if sp.get_discount_percentage %}
+            <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+              -{{ sp.get_discount_percentage }}%
+            </span>
+            {% endif %}
+          </div>
+          <!-- Info -->
+          <div class="p-3">
+            {% if sp.brand_new %}
+            <div class="text-amber-400 text-xs font-semibold uppercase tracking-wide mb-0.5">{{ sp.brand_new.name }}</div>
+            {% elif sp.brand %}
+            <div class="text-amber-400 text-xs font-semibold uppercase tracking-wide mb-0.5">{{ sp.brand }}</div>
+            {% endif %}
+            <div class="text-white text-sm font-semibold leading-tight line-clamp-2 mb-2">
+              {{ sp.title2|default:sp.name }}
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-amber-400 font-bold text-base">&#8377;{{ sp.price }}</span>
+              {% if sp.mrp and sp.mrp > sp.price %}
+              <span class="text-gray-500 text-xs line-through">&#8377;{{ sp.mrp }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      <!-- View all CTA -->
+      <div class="text-center">
+        <a href="{% url 'product_list' %}" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold px-8 py-3 rounded-xl transition-colors text-sm">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+          Shop All Products at SmokeKing
+        </a>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Related Products -->
+    {% if related %}
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-white mb-6">More {{ product.get_product_type_display }}s</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for p in related %}
+        {% include 'encyclopedia/partials/product_card.html' with product=p compare_ids=compare_ids %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% include 'encyclopedia/partials/compare_js.html' %}
+<script>
+function clearCompare() {
+  fetch('{% url "encyclopedia:clear_compare" %}', {
+    method: 'GET', headers: {'X-Requested-With': 'XMLHttpRequest'}
+  }).then(() => location.reload());
+}
+</script>
+{% endblock %}

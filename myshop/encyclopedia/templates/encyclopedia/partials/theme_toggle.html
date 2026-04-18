@@ -1,0 +1,311 @@
+<style>
+  /* ── Dark theme (default) ── */
+  .enc-wrap {
+    --enc-bg:        #030712;
+    --enc-surface:   rgba(31,41,55,0.6);
+    --enc-surface-2: rgba(17,24,39,0.4);
+    --enc-border:    rgba(55,65,81,1);
+    --enc-border-h:  rgba(245,158,11,0.5);
+    --enc-text:      #ffffff;
+    --enc-text-2:    #9ca3af;
+    --enc-text-3:    #6b7280;
+    --enc-badge:     rgba(17,24,39,0.7);
+    --enc-hero-from: #111827;
+    --enc-hero-via:  #431407;
+    --enc-hero-to:   #111827;
+    --enc-accent:    #f59e0b;
+    --enc-accent-dim:#92400e;
+    --enc-sub-bg:    rgba(153,27,27,0.2);
+    --enc-sub-border:rgba(153,27,27,0.4);
+    --enc-sub-text:  #fca5a5;
+    --enc-inp-bg:    #374151;
+    --enc-inp-border:#4b5563;
+    --enc-header-bg: linear-gradient(to right, #111827, #1f2937);
+    --enc-row-sep:   rgba(31,41,55,0.6);
+    --enc-slot-border:#374151;
+    --enc-slot-text: #4b5563;
+    --enc-tasting-bg:rgba(120,53,15,0.2);
+    --enc-tasting-b: rgba(120,53,15,0.3);
+    --enc-spec-head: rgba(55,65,81,0.5);
+  }
+
+  /* ── Light theme ── */
+  .enc-wrap.enc-light {
+    --enc-bg:        #fdf6e3;
+    --enc-surface:   rgba(255,248,230,0.95);
+    --enc-surface-2: rgba(255,243,205,0.7);
+    --enc-border:    rgba(217,119,6,0.25);
+    --enc-border-h:  rgba(245,158,11,0.7);
+    --enc-text:      #1c0f00;
+    --enc-text-2:    #6b4c1e;
+    --enc-text-3:    #9a7040;
+    --enc-badge:     rgba(254,243,199,0.9);
+    --enc-hero-from: #fef3c7;
+    --enc-hero-via:  #fde68a;
+    --enc-hero-to:   #fef3c7;
+    --enc-accent:    #b45309;
+    --enc-accent-dim:#92400e;
+    --enc-sub-bg:    rgba(254,226,226,0.6);
+    --enc-sub-border:rgba(252,165,165,0.5);
+    --enc-sub-text:  #991b1b;
+    --enc-inp-bg:    #fff8ec;
+    --enc-inp-border:rgba(217,119,6,0.4);
+    --enc-header-bg: linear-gradient(to right, #fef3c7, #fde68a);
+    --enc-row-sep:   rgba(217,119,6,0.15);
+    --enc-slot-border:rgba(217,119,6,0.3);
+    --enc-slot-text: #b45309;
+    --enc-tasting-bg:rgba(254,243,199,0.8);
+    --enc-tasting-b: rgba(245,158,11,0.4);
+    --enc-spec-head: rgba(254,243,199,0.8);
+  }
+
+  /* ── Apply variables ── */
+  .enc-wrap { background-color: var(--enc-bg); }
+
+  .enc-wrap .enc-surface   { background: var(--enc-surface); border-color: var(--enc-border); }
+  .enc-wrap .enc-surface-2 { background: var(--enc-surface-2); }
+  .enc-wrap .enc-text      { color: var(--enc-text); }
+  .enc-wrap .enc-text-2    { color: var(--enc-text-2); }
+  .enc-wrap .enc-text-3    { color: var(--enc-text-3); }
+  .enc-wrap .enc-accent    { color: var(--enc-accent); }
+
+  /* Hero gradient */
+  .enc-wrap .enc-hero {
+    background: linear-gradient(135deg, var(--enc-hero-from), var(--enc-hero-via), var(--enc-hero-to));
+  }
+  .enc-wrap.enc-light .enc-hero-blob-1 { background: rgba(245,158,11,0.25); }
+  .enc-wrap.enc-light .enc-hero-blob-2 { background: rgba(180,83,9,0.2); }
+
+  /* Cards */
+  .enc-wrap .enc-card {
+    background: var(--enc-surface);
+    border-color: var(--enc-border);
+    transition: border-color 0.2s;
+  }
+  .enc-wrap .enc-card:hover { border-color: var(--enc-border-h); }
+
+  /* Spec value cells */
+  .enc-wrap .enc-spec-val { background: var(--enc-surface-2); color: var(--enc-text); }
+  .enc-wrap .enc-spec-row { border-color: var(--enc-row-sep); }
+  .enc-wrap .enc-spec-head { background: var(--enc-spec-head); }
+
+  /* Substance warning box */
+  .enc-wrap .enc-sub-box   { background: var(--enc-sub-bg); border-color: var(--enc-sub-border); }
+  .enc-wrap .enc-sub-badge { background: var(--enc-sub-bg); border-color: var(--enc-sub-border); color: var(--enc-sub-text); }
+
+  /* Tasting notes */
+  .enc-wrap .enc-tasting { background: var(--enc-tasting-bg); border-color: var(--enc-tasting-b); }
+
+  /* Form inputs */
+  .enc-wrap .enc-inp {
+    background: var(--enc-inp-bg);
+    border-color: var(--enc-inp-border);
+    color: var(--enc-text);
+  }
+  .enc-wrap .enc-inp:focus { border-color: var(--enc-accent); }
+  .enc-wrap select.enc-inp option { background: var(--enc-inp-bg); color: var(--enc-text); }
+
+  /* Header/breadcrumb bar */
+  .enc-wrap .enc-header { background: var(--enc-header-bg); border-color: var(--enc-border); }
+
+  /* Compare empty slot */
+  .enc-wrap .enc-slot { border-color: var(--enc-slot-border); color: var(--enc-slot-text); }
+  .enc-wrap .enc-slot p { color: var(--enc-slot-text); }
+
+  /* Badge chips */
+  .enc-wrap .enc-type-cigar    { background: rgba(120,53,15,0.15); color: var(--enc-accent); }
+  .enc-wrap .enc-type-cigarette{ background: rgba(29,78,216,0.1);  color: #60a5fa; }
+  .enc-wrap .enc-type-lighter  { background: rgba(194,65,12,0.15); color: #fb923c; }
+  .enc-wrap .enc-type-accessory{ background: var(--enc-surface-2); color: var(--enc-text-2); }
+
+  .enc-wrap.enc-light .enc-type-cigarette { background: rgba(29,78,216,0.08); color: #1d4ed8; }
+  .enc-wrap.enc-light .enc-type-lighter   { background: rgba(234,88,12,0.1);  color: #c2410c; }
+
+  /* ── Light mode: amber/yellow → darker visible brown ── */
+  .enc-wrap.enc-light .text-amber-400,
+  .enc-wrap.enc-light .text-amber-300,
+  .enc-wrap.enc-light .text-amber-500 { color: #92400e !important; }
+
+  .enc-wrap.enc-light .text-yellow-400 { color: #78350f !important; }
+  .enc-wrap.enc-light .text-orange-400 { color: #9a3412 !important; }
+  .enc-wrap.enc-light .text-red-400    { color: #991b1b !important; }
+
+  /* ── Light mode: image placeholders → warm cream gradient ── */
+  .enc-wrap.enc-light .bg-gradient-to-br.from-gray-700,
+  .enc-wrap.enc-light .bg-gradient-to-br.from-gray-700.to-gray-800 {
+    background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+  }
+
+  /* ── Light mode: force all text dark ── */
+  .enc-wrap.enc-light,
+  .enc-wrap.enc-light p,
+  .enc-wrap.enc-light span:not(.text-amber-400):not(.text-amber-300):not(.text-amber-500):not(.text-red-400):not(.text-orange-400):not(.text-yellow-400):not(.text-blue-300):not(.text-orange-300):not(.text-gray-300 .text-sm),
+  .enc-wrap.enc-light h1,
+  .enc-wrap.enc-light h2,
+  .enc-wrap.enc-light h3,
+  .enc-wrap.enc-light h4,
+  .enc-wrap.enc-light label,
+  .enc-wrap.enc-light li { color: #1c0f00; }
+
+  /* Secondary text in light mode */
+  .enc-wrap.enc-light .text-gray-400,
+  .enc-wrap.enc-light .text-gray-500,
+  .enc-wrap.enc-light .text-gray-300 { color: #6b4c1e !important; }
+
+  /* White text → dark in light mode */
+  .enc-wrap.enc-light .text-white { color: #1c0f00 !important; }
+
+  /* Card/surface backgrounds in light mode */
+  .enc-wrap.enc-light .bg-gray-800\/60,
+  .enc-wrap.enc-light .bg-gray-800\/40,
+  .enc-wrap.enc-light .bg-gray-800\/30,
+  .enc-wrap.enc-light .bg-gray-700\/50,
+  .enc-wrap.enc-light .bg-gray-700\/80,
+  .enc-wrap.enc-light .bg-gray-700\/60 { background: rgba(255,248,230,0.95) !important; }
+
+  .enc-wrap.enc-light .bg-gray-900,
+  .enc-wrap.enc-light .bg-gray-950 { background: #fdf6e3 !important; }
+
+  /* Borders */
+  .enc-wrap.enc-light .border-gray-700,
+  .enc-wrap.enc-light .border-gray-600,
+  .enc-wrap.enc-light .border-gray-800 { border-color: rgba(180,83,9,0.25) !important; }
+
+  /* Input backgrounds */
+  .enc-wrap.enc-light input,
+  .enc-wrap.enc-light select { background: #fff8ec !important; color: #1c0f00 !important; border-color: rgba(180,83,9,0.3) !important; }
+
+  /* Spec row dividers */
+  .enc-wrap.enc-light .divide-gray-700\/50 > * + * { border-color: rgba(180,83,9,0.15) !important; }
+
+  /* Section heading bars */
+  .enc-wrap.enc-light .bg-gray-700\/50 { background: rgba(254,243,199,0.8) !important; }
+
+  /* Hero banner in light mode */
+  .enc-wrap.enc-light .bg-gradient-to-br.from-gray-900,
+  .enc-wrap.enc-light .bg-gradient-to-r.from-gray-900 {
+    background: linear-gradient(to right, #fef3c7, #fde68a) !important;
+  }
+  .enc-wrap.enc-light .bg-gradient-to-r.from-gray-900.to-gray-800 {
+    background: linear-gradient(to right, #fef3c7, #fde68a) !important;
+  }
+
+  /* Hero text stays readable */
+  .enc-wrap.enc-light .text-transparent { color: transparent !important; }
+
+  /* Sidebar sticky card */
+  .enc-wrap.enc-light .sticky { background: rgba(255,248,230,0.98) !important; }
+
+  /* Compare bar */
+  .enc-wrap.enc-light #compare-bar { background: #fef3c7 !important; border-color: rgba(180,83,9,0.4) !important; }
+  .enc-wrap.enc-light #compare-bar .text-gray-400 { color: #92400e !important; }
+
+  /* spec value cells in compare table */
+  .enc-wrap.enc-light .bg-gray-800\/30 { background: rgba(254,243,199,0.6) !important; }
+
+  /* Dashed empty slot in compare */
+  .enc-wrap.enc-light .border-dashed { border-color: rgba(180,83,9,0.3) !important; }
+
+  /* Pricing box */
+  .enc-wrap .enc-price-india {
+    background: rgba(120,53,15,0.2);
+    border-color: rgba(120,53,15,0.4);
+  }
+  .enc-wrap.enc-light .enc-price-india {
+    background: rgba(254,243,199,0.9);
+    border-color: rgba(245,158,11,0.5);
+  }
+
+  /* Separator lines */
+  .enc-wrap .enc-divider { border-color: var(--enc-border); }
+
+  /* Stat pill in hero */
+  .enc-wrap .enc-pill {
+    background: rgba(245,158,11,0.12);
+    border-color: rgba(245,158,11,0.3);
+    color: var(--enc-accent);
+  }
+
+  /* Compare bar */
+  .enc-wrap .enc-compare-bar {
+    background: var(--enc-surface);
+    border-color: rgba(245,158,11,0.4);
+  }
+  .enc-wrap.enc-light .enc-compare-bar { background: #fef3c7; }
+
+  /* Image placeholder area */
+  .enc-wrap .enc-img-placeholder {
+    background: linear-gradient(135deg, var(--enc-surface), var(--enc-surface-2));
+  }
+
+  /* Toggle button itself */
+  #enc-theme-btn {
+    position: fixed;
+    top: 80px;
+    right: 16px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    white-space: nowrap;
+  }
+  .enc-wrap:not(.enc-light) #enc-theme-btn {
+    background: rgba(31,41,55,0.85);
+    border-color: rgba(245,158,11,0.5);
+    color: #fbbf24;
+  }
+  .enc-wrap.enc-light #enc-theme-btn {
+    background: rgba(254,243,199,0.95);
+    border-color: rgba(180,83,9,0.5);
+    color: #92400e;
+    box-shadow: 0 2px 12px rgba(180,83,9,0.15);
+  }
+  #enc-theme-btn:hover { transform: scale(1.05); }
+</style>
+
+<!-- Theme Toggle Button -->
+<button id="enc-theme-btn" onclick="encToggleTheme()" title="Switch light/dark mode">
+  <span id="enc-theme-icon">☀</span>
+  <span id="enc-theme-label">Light</span>
+</button>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'enc_theme';
+  const wrap = document.querySelector('.enc-wrap');
+  const btn  = document.getElementById('enc-theme-btn');
+  const icon = document.getElementById('enc-theme-icon');
+  const lbl  = document.getElementById('enc-theme-label');
+
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      wrap.classList.add('enc-light');
+      icon.textContent = '🌙';
+      lbl.textContent  = 'Dark';
+    } else {
+      wrap.classList.remove('enc-light');
+      icon.textContent = '☀';
+      lbl.textContent  = 'Light';
+    }
+  }
+
+  // Load saved preference
+  applyTheme(localStorage.getItem(STORAGE_KEY) || 'dark');
+
+  window.encToggleTheme = function() {
+    const isLight = wrap.classList.contains('enc-light');
+    const next = isLight ? 'dark' : 'light';
+    localStorage.setItem(STORAGE_KEY, next);
+    applyTheme(next);
+  };
+})();
+</script>

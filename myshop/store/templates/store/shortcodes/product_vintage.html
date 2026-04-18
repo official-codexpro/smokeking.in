@@ -1,0 +1,91 @@
+{% load home_filters %}
+
+{% with category=categories|get_category_by_slug:category_slug %}
+{% if category %}
+{% with products=category|active_products %}
+
+<section class="w-full bg-[#181310] overflow-hidden m-0 p-0">
+
+<div id="vintage-grid" class="grid grid-cols-2 lg:grid-cols-4 w-full gap-[1px] bg-[#C0A27A]/15">
+
+{% for product in products %}
+{% if product.get_display_title == "Bless Rro Gold Lighter" or product.get_display_title == "Antique Gold Style Lighter" or product.get_display_title == "HexaForge Gold Retro Lighter" or product.get_display_title == "Royal Heritage Gold Lighter" or product.get_display_title == "Vintage Gold Antique Lighter" or product.get_display_title == "Vintage Antique Gold Lighter" or product.get_display_title == "Vintage Antique Brushed Gold Lighter" or product.get_display_title == "Vintage Antique Bronze lighter" %}
+<div class="product-card group relative flex flex-col overflow-hidden transition-all duration-500"
+     data-title="{{ product.get_display_title }}"
+     style="background: linear-gradient(145deg,#15100d,#0f0b09);">
+
+<a href="{% url 'product_detail' product.slug %}"
+class="relative block aspect-square overflow-hidden"
+style="background: radial-gradient(circle at center,#1c1612 0%,#000000 100%);">
+
+<div class="absolute inset-0 z-10"
+style="background: linear-gradient(to bottom,rgba(0,0,0,0.1),transparent,rgba(0,0,0,0.1));pointer-events:none;"></div>
+
+{% if product.images.first or product.image %}
+<img src="{% if product.images.first %}{{ product.images.first.image.url }}{% else %}{{ product.image.url }}{% endif %}"
+alt="{{ product.name }}"
+loading="lazy"
+class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] object-contain z-5 transition-transform duration-700 group-hover:scale-110"/>
+{% endif %}
+
+</a>
+
+<div class="p-4 sm:p-5 flex flex-col flex-grow border-t"
+style="border-top:1px solid rgba(192,162,122,0.05);">
+
+<h3 class="text-[11px] sm:text-[13px] text-white font-semibold uppercase tracking-[0.12em] mb-2 leading-tight min-h-[32px] line-clamp-2">
+{{ product.get_display_title }}
+</h3>
+
+<div class="flex items-center justify-between mt-auto pt-3 border-t border-dashed"
+style="border-top:1px dashed rgba(192,162,122,0.2);">
+
+<div class="text-[#C0A27A] text-[10px] tracking-[1px]">
+★ ★ ★ ★ ★
+</div>
+
+<div class="text-white font-bold text-sm sm:text-lg">
+<span class="text-[#C0A27A] text-xs mr-[1px]">₹</span>{{ product.price }}
+</div>
+
+</div>
+</div>
+</div>
+
+{% endif %}
+{% endfor %}
+
+</div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const order = [
+"Bless Rro Gold Lighter",
+"Antique Gold Style Lighter",
+"HexaForge Gold Retro Lighter",
+"Royal Heritage Gold Lighter",
+"Vintage Gold Antique Lighter",
+"Vintage Antique Gold Lighter",
+"Vintage Antique Brushed Gold Lighter",
+"Vintage Antique Bronze lighter"
+];
+
+const container = document.getElementById("vintage-grid");
+const cards = Array.from(container.querySelectorAll(".product-card"));
+
+cards.sort((a,b)=>{
+const aIndex = order.indexOf(a.dataset.title.trim());
+const bIndex = order.indexOf(b.dataset.title.trim());
+return aIndex - bIndex;
+});
+
+cards.forEach(card => container.appendChild(card));
+
+});
+</script>
+
+{% endwith %}
+{% endif %}
+{% endwith %}

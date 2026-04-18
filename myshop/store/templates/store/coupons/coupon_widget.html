@@ -1,0 +1,353 @@
+<!-- Coupon Application Widget -->
+<div id="couponWidget" class="coupon-widget mb-4">
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                <i class="fas fa-tags text-success"></i>
+                Apply Coupon Code
+            </h5>
+        </div>
+        <div class="card-body">
+            <div id="couponForm">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="couponCodeInput"
+                        class="form-control"
+                        placeholder="Enter coupon code"
+                        style="text-transform: uppercase;"
+                        maxlength="50"
+                    >
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        id="applyCouponBtn"
+                        onclick="applyCoupon()"
+                    >
+                        <span id="applyBtnText">Apply</span>
+                        <span id="applyBtnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    </button>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <a href="{% url 'available_coupons' %}" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            Browse available coupons
+                        </a>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Applied Coupon Display -->
+            <div id="appliedCouponDisplay" class="d-none">
+                <div class="alert alert-success d-flex justify-content-between align-items-center mb-0">
+                    <div>
+                        <strong id="appliedCouponCode"></strong>
+                        <span id="appliedCouponDescription"></span>
+                        <br>
+                        <small>
+                            <i class="fas fa-check-circle"></i>
+                            Discount: <span id="appliedDiscountAmount"></span>
+                        </small>
+                    </div>
+                    <button
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="removeCoupon()"
+                        title="Remove coupon"
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Coupon Messages -->
+            <div id="couponMessages" class="mt-3"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Coupon Widget Styles -->
+<style>
+.coupon-widget .form-control {
+    border-right: 0;
+}
+
+.coupon-widget .btn {
+    border-left: 0;
+}
+
+.coupon-code-suggestion {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.coupon-code-suggestion:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.coupon-validation-message {
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.coupon-validation-success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.coupon-validation-error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.coupon-savings-highlight {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#couponCodeInput {
+    text-transform: uppercase;
+}
+</style>
+
+<!-- Coupon Widget JavaScript -->
+<script>
+let currentCoupon = null;
+
+// Initialize coupon widget
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-uppercase coupon input
+    document.getElementById('couponCodeInput').addEventListener('input', function(e) {
+        this.value = this.value.toUpperCase();
+    });
+
+    // Apply coupon on Enter key
+    document.getElementById('couponCodeInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyCoupon();
+        }
+    });
+
+    // Check for existing applied coupon
+    checkExistingCoupon();
+
+    // Auto-apply coupon from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const applyCouponCode = urlParams.get('apply_coupon');
+    if (applyCouponCode) {
+        document.getElementById('couponCodeInput').value = applyCouponCode;
+        applyCoupon();
+    }
+});
+
+function applyCoupon() {
+    const couponCode = document.getElementById('couponCodeInput').value.trim();
+
+    if (!couponCode) {
+        showCouponMessage('Please enter a coupon code', 'error');
+        return;
+    }
+
+    // Show loading state
+    setLoadingState(true);
+    clearCouponMessages();
+
+    // Make AJAX request to apply coupon
+    fetch('{% url "apply_coupon" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
+        },
+        body: JSON.stringify({
+            coupon_code: couponCode
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        setLoadingState(false);
+
+        if (data.success) {
+            showAppliedCoupon(data.data);
+            showCouponMessage(data.message, 'success');
+            updateCartTotals(data.data);
+        } else {
+            showCouponMessage(data.error, 'error');
+        }
+    })
+    .catch(error => {
+        setLoadingState(false);
+        showCouponMessage('An error occurred. Please try again.', 'error');
+        console.error('Coupon application error:', error);
+    });
+}
+
+function removeCoupon() {
+    setLoadingState(true);
+    clearCouponMessages();
+
+    fetch('{% url "remove_coupon" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        setLoadingState(false);
+
+        if (data.success) {
+            hideAppliedCoupon();
+            showCouponMessage(data.message, 'success');
+            updateCartTotals(data.data);
+        } else {
+            showCouponMessage(data.error, 'error');
+        }
+    })
+    .catch(error => {
+        setLoadingState(false);
+        showCouponMessage('An error occurred. Please try again.', 'error');
+        console.error('Coupon removal error:', error);
+    });
+}
+
+function showAppliedCoupon(couponData) {
+    document.getElementById('appliedCouponCode').textContent = couponData.coupon_code;
+    document.getElementById('appliedCouponDescription').textContent =
+        couponData.coupon_description ? ' - ' + couponData.coupon_description : '';
+    document.getElementById('appliedDiscountAmount').textContent = '₹' + couponData.discount_amount.toFixed(2);
+
+    document.getElementById('couponForm').classList.add('d-none');
+    document.getElementById('appliedCouponDisplay').classList.remove('d-none');
+
+    currentCoupon = couponData;
+}
+
+function hideAppliedCoupon() {
+    document.getElementById('couponForm').classList.remove('d-none');
+    document.getElementById('appliedCouponDisplay').classList.add('d-none');
+    document.getElementById('couponCodeInput').value = '';
+
+    currentCoupon = null;
+}
+
+function showCouponMessage(message, type) {
+    const messagesDiv = document.getElementById('couponMessages');
+    const messageClass = type === 'success' ? 'coupon-validation-success' : 'coupon-validation-error';
+
+    messagesDiv.innerHTML = `
+        <div class="coupon-validation-message ${messageClass}">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            ${message}
+        </div>
+    `;
+
+    // Auto-hide success messages after 5 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            clearCouponMessages();
+        }, 5000);
+    }
+}
+
+function clearCouponMessages() {
+    document.getElementById('couponMessages').innerHTML = '';
+}
+
+function setLoadingState(isLoading) {
+    const btn = document.getElementById('applyCouponBtn');
+    const btnText = document.getElementById('applyBtnText');
+    const btnSpinner = document.getElementById('applyBtnSpinner');
+    const input = document.getElementById('couponCodeInput');
+
+    if (isLoading) {
+        btn.disabled = true;
+        input.disabled = true;
+        btnText.classList.add('d-none');
+        btnSpinner.classList.remove('d-none');
+    } else {
+        btn.disabled = false;
+        input.disabled = false;
+        btnText.classList.remove('d-none');
+        btnSpinner.classList.add('d-none');
+    }
+}
+
+function updateCartTotals(totalsData) {
+    // Update cart total elements if they exist on the page
+    const subtotalElement = document.querySelector('[data-subtotal]');
+    const discountElement = document.querySelector('[data-discount]');
+    const totalElement = document.querySelector('[data-total]');
+
+    if (subtotalElement) {
+        subtotalElement.textContent = '₹' + totalsData.subtotal.toFixed(2);
+    }
+
+    if (discountElement) {
+        discountElement.textContent = '₹' + totalsData.discount_amount.toFixed(2);
+        discountElement.closest('tr, .discount-row')?.style.display =
+            totalsData.discount_amount > 0 ? '' : 'none';
+    }
+
+    if (totalElement) {
+        totalElement.textContent = '₹' + totalsData.total.toFixed(2);
+    }
+
+    // Trigger custom event for other parts of the page to listen to
+    window.dispatchEvent(new CustomEvent('couponUpdated', {
+        detail: totalsData
+    }));
+}
+
+function checkExistingCoupon() {
+    // This would typically check session storage or make an AJAX call
+    // to see if a coupon is already applied
+}
+
+function getCsrfToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') {
+            return value;
+        }
+    }
+    // Fallback to meta tag
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    return csrfMeta ? csrfMeta.getAttribute('content') : '';
+}
+
+// Utility function to suggest popular coupons
+function showCouponSuggestions() {
+    // This could be enhanced to fetch popular coupons via AJAX
+    const suggestions = ['SAVE10', 'WELCOME20', 'FIRSTBUY', 'BULK25'];
+    const suggestionsHtml = suggestions.map(code =>
+        `<span class="coupon-code-suggestion" onclick="applyCouponSuggestion('${code}')">${code}</span>`
+    ).join('');
+
+    showCouponMessage(`Popular coupons: ${suggestionsHtml}`, 'info');
+}
+
+function applyCouponSuggestion(code) {
+    document.getElementById('couponCodeInput').value = code;
+    applyCoupon();
+}
+</script>

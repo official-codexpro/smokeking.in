@@ -1,0 +1,182 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Smoking Encyclopedia – Cigarettes, Cigars & Accessories | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}The ultimate encyclopedia for cigarettes, cigars, premium lighters, and smoking accessories. Compare products, view specifications, nicotine/tar content, and pricing.{% endblock %}
+
+{% block content %}
+<div class="enc-wrap min-h-screen">
+{% include 'encyclopedia/partials/theme_toggle.html' %}
+
+  <!-- Hero Banner -->
+  <div class="relative overflow-hidden bg-gradient-to-br from-gray-900 via-amber-950 to-gray-900 py-16 md:py-24">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 left-10 w-64 h-64 bg-amber-500 rounded-full filter blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 w-96 h-96 bg-amber-700 rounded-full filter blur-3xl"></div>
+    </div>
+    <div class="relative max-w-6xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+        Comprehensive Smoking Encyclopedia
+      </div>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+        The <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">Encyclopedia</span><br>of Tobacco
+      </h1>
+      <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-10">
+        Detailed specifications, substance content, pricing, and history for cigarettes, cigars, premium lighters, and accessories. Compare up to 3 products side-by-side.
+      </p>
+
+      <!-- Category Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+        <a href="{% url 'encyclopedia:list' %}?type=cigarette" class="group bg-gray-800/60 hover:bg-amber-900/60 border border-gray-700 hover:border-amber-500 rounded-xl p-5 transition-all duration-300">
+          <div class="text-4xl mb-2">🚬</div>
+          <div class="text-white font-semibold text-lg">Cigarettes</div>
+          <div class="text-amber-400 text-2xl font-bold">{{ counts.cigarette }}</div>
+          <div class="text-gray-400 text-xs mt-1">products</div>
+        </a>
+        <a href="{% url 'encyclopedia:list' %}?type=cigar" class="group bg-gray-800/60 hover:bg-amber-900/60 border border-gray-700 hover:border-amber-500 rounded-xl p-5 transition-all duration-300">
+          <div class="text-4xl mb-2">🎩</div>
+          <div class="text-white font-semibold text-lg">Cigars</div>
+          <div class="text-amber-400 text-2xl font-bold">{{ counts.cigar }}</div>
+          <div class="text-gray-400 text-xs mt-1">products</div>
+        </a>
+        <a href="{% url 'encyclopedia:list' %}?type=lighter" class="group bg-gray-800/60 hover:bg-amber-900/60 border border-gray-700 hover:border-amber-500 rounded-xl p-5 transition-all duration-300">
+          <div class="text-4xl mb-2">🔥</div>
+          <div class="text-white font-semibold text-lg">Lighters</div>
+          <div class="text-amber-400 text-2xl font-bold">{{ counts.lighter }}</div>
+          <div class="text-gray-400 text-xs mt-1">products</div>
+        </a>
+        <a href="{% url 'encyclopedia:list' %}?type=accessory" class="group bg-gray-800/60 hover:bg-amber-900/60 border border-gray-700 hover:border-amber-500 rounded-xl p-5 transition-all duration-300">
+          <div class="text-4xl mb-2">✂</div>
+          <div class="text-white font-semibold text-lg">Accessories</div>
+          <div class="text-amber-400 text-2xl font-bold">{{ counts.accessory }}</div>
+          <div class="text-gray-400 text-xs mt-1">products</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare Bar -->
+  <div id="compare-bar" class="{% if compare_count == 0 %}hidden{% endif %} fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-amber-500/50 shadow-2xl">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="text-amber-400 font-semibold text-sm">Compare (<span id="compare-bar-count">{{ compare_count }}</span>/3)</span>
+        <div id="compare-bar-items" class="flex gap-2">
+        </div>
+      </div>
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <a href="{% url 'encyclopedia:compare' %}" class="bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold text-sm px-5 py-2 rounded-lg transition-colors">
+          Compare Now
+        </a>
+        <button onclick="clearCompare()" class="text-gray-400 hover:text-white text-sm px-3 py-2 transition-colors">
+          Clear All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Products -->
+  {% if featured %}
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-white">Featured Products</h2>
+      <a href="{% url 'encyclopedia:list' %}" class="text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors">View All &rarr;</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {% for product in featured %}
+      {% include 'encyclopedia/partials/product_card.html' with product=product compare_ids=compare_ids %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Cigarettes Section -->
+  {% if cigarettes %}
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🚬</span>
+        <h2 class="text-2xl font-bold text-white">Cigarettes</h2>
+      </div>
+      <a href="{% url 'encyclopedia:list' %}?type=cigarette" class="text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors">All {{ counts.cigarette }} Cigarettes &rarr;</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for product in cigarettes %}
+      {% include 'encyclopedia/partials/product_card.html' with product=product compare_ids=compare_ids %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Cigars Section -->
+  {% if cigars %}
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🎩</span>
+        <h2 class="text-2xl font-bold text-white">Cigars</h2>
+      </div>
+      <a href="{% url 'encyclopedia:list' %}?type=cigar" class="text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors">All {{ counts.cigar }} Cigars &rarr;</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for product in cigars %}
+      {% include 'encyclopedia/partials/product_card.html' with product=product compare_ids=compare_ids %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ═══ SALES BANNER ═══ -->
+  <div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 border border-amber-700/50">
+      <div class="absolute inset-0 opacity-20">
+        <div class="absolute -top-8 -right-8 w-48 h-48 bg-amber-400 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-8 -left-8 w-48 h-48 bg-yellow-600 rounded-full blur-3xl"></div>
+      </div>
+      <div class="relative flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-7">
+        <div>
+          <div class="text-amber-300 text-xs font-bold uppercase tracking-widest mb-1">SmokeKing Store</div>
+          <h3 class="text-white text-2xl font-bold mb-1">India's Premium Lighter Destination</h3>
+          <p class="text-amber-200/80 text-sm">Zippo, S.T. Dupont, Clipper & more — authentic, fast delivery across India.</p>
+        </div>
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <a href="{% url 'product_list' %}" class="bg-white text-amber-900 hover:bg-amber-50 font-bold px-6 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap">
+            Shop Now &rarr;
+          </a>
+          <a href="{% url 'home' %}" class="border border-white/40 text-white hover:bg-white/10 font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap">
+            View Deals
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lighters Section -->
+  {% if lighters %}
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🔥</span>
+        <h2 class="text-2xl font-bold text-white">Premium Lighters</h2>
+      </div>
+      <a href="{% url 'encyclopedia:list' %}?type=lighter" class="text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors">All {{ counts.lighter }} Lighters &rarr;</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for product in lighters %}
+      {% include 'encyclopedia/partials/product_card.html' with product=product compare_ids=compare_ids %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% include 'encyclopedia/partials/compare_js.html' %}
+<script>
+  function clearCompare() {
+    fetch('{% url "encyclopedia:clear_compare" %}', {
+      method: 'GET', headers: {'X-Requested-With': 'XMLHttpRequest'}
+    }).then(() => location.reload());
+  }
+</script>
+{% endblock %}

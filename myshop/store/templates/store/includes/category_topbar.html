@@ -1,0 +1,209 @@
+<!-- Category-Specific Top Bar with Catchy Taglines -->
+{% load static %}
+
+{% if TOPBAR_SETTINGS and TOPBAR_SETTINGS.is_active %}
+<div class="py-2 shadow-md border-y-[1px]" style="background: linear-gradient(to right, {{ TOPBAR_SETTINGS.color_a }}, {{ TOPBAR_SETTINGS.color_b }}); color: {{ TOPBAR_SETTINGS.text_color }}; ">
+  <div class="w-full px-0">
+    {% if TOPBAR_SETTINGS.animation_type == 'marquee' %}
+<div class="marquee-container">
+  <div class="marquee-track">
+
+    {% for i in "123456" %}
+
+    <!-- TEXT 1 -->
+    <div class="marquee-item">
+      <svg class="icon" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c..."/>
+      </svg>
+
+      {% if TOPBAR_SETTINGS.url_1 %}
+        <a href="{{ TOPBAR_SETTINGS.url_1 }}" class="topbar-text">
+          {{ TOPBAR_SETTINGS.text_1 }}
+        </a>
+      {% else %}
+        <span class="topbar-text">{{ TOPBAR_SETTINGS.text_1 }}</span>
+      {% endif %}
+    </div>
+
+    <!-- DOT -->
+    <div class="dot"></div>
+
+    <!-- TEXT 2 -->
+    <div class="marquee-item">
+      <svg class="icon" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c..."/>
+      </svg>
+
+      {% if TOPBAR_SETTINGS.url_2 %}
+        <a href="{{ TOPBAR_SETTINGS.url_2 }}" class="topbar-text">
+          {{ TOPBAR_SETTINGS.text_2 }}
+        </a>
+      {% else %}
+        <span class="topbar-text">{{ TOPBAR_SETTINGS.text_2 }}</span>
+      {% endif %}
+    </div>
+
+    <!-- DOT -->
+    <div class="dot"></div>
+
+    <!-- TEXT 3 -->
+    <div class="marquee-item">
+      <svg class="icon" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c..."/>
+      </svg>
+
+      {% if TOPBAR_SETTINGS.url_3 %}
+        <a href="{{ TOPBAR_SETTINGS.url_3 }}" class="topbar-text">
+          {{ TOPBAR_SETTINGS.text_3 }}
+        </a>
+      {% else %}
+        <span class="topbar-text">{{ TOPBAR_SETTINGS.text_3 }}</span>
+      {% endif %}
+    </div>
+
+    <!-- LAST DOT (optional remove if nahi chahiye loop end pe) -->
+    <div class="dot"></div>
+
+    {% endfor %}
+
+  </div>
+</div>
+<style>
+ /* ===== MARQUEE FIX (UPDATED) ===== */
+.dot{
+  width:6px;
+  height:6px;
+  background:#ffffff;
+
+  /* square */
+  border-radius:0;
+
+  /* spacing */
+  margin:0 20px;
+
+  /* alignment fix */
+  align-self:center; /* 🔥 main fix */
+  flex-shrink:0;
+
+  /* visual */
+  opacity:0.8;
+}
+.marquee-container{
+  width:100%;
+  overflow:hidden;
+  position:relative;
+}
+
+.marquee-track{
+  display:flex;
+  width:max-content;
+  animation: marquee 60s linear infinite; /* 🔥 speed slow (25s → 40s) */
+  will-change: transform;
+}
+
+/* smooth animation */
+@keyframes marquee{
+  0%{ transform:translateX(0); }
+  100%{ transform:translateX(-50%); }
+}
+
+/* hover pause */
+.marquee-container:hover .marquee-track{
+  animation-play-state: paused;
+}
+
+/* item */
+.marquee-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 30px;
+  flex-shrink:0;
+}
+
+/* icon */
+.icon{
+  width:16px;
+  height:16px;
+  fill:#ffffff; /* 🔥 white icon */
+}
+
+/* text */
+.topbar-text{
+  font-size:12px;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  font-weight:700; /* 🔥 bold */
+  color:#ffffff;   /* 🔥 white text */
+  white-space:nowrap;
+}
+</style>
+    {% else %}
+      <!-- Slider Animation (Instant Change) -->
+      <div class="flex items-center justify-center overflow-hidden relative h-8">
+        <div class="flex items-center space-x-2 absolute" id="topbar-slider">
+          <!-- Icon -->
+          <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+
+          <!-- Dynamic Tagline that changes -->
+          <p class="text-sm md:text-base font-semibold tracking-wide text-center transition-opacity duration-500" id="topbar-text">
+            {% if TOPBAR_SETTINGS.url_1 %}
+              <a href="{{ TOPBAR_SETTINGS.url_1 }}" class="hover:underline">{{ TOPBAR_SETTINGS.text_1 }}</a>
+            {% else %}
+              {{ TOPBAR_SETTINGS.text_1 }}
+            {% endif %}
+          </p>
+
+          <!-- Animated Sparkle -->
+          <svg class="w-4 h-4 flex-shrink-0 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+        </div>
+      </div>
+
+      <script>
+        (function() {
+          const textData = [
+            {
+              text: "{{ TOPBAR_SETTINGS.text_1|escapejs }}",
+              url: "{{ TOPBAR_SETTINGS.url_1|escapejs }}"
+            },
+            {
+              text: "{{ TOPBAR_SETTINGS.text_2|escapejs }}",
+              url: "{{ TOPBAR_SETTINGS.url_2|escapejs }}"
+            },
+            {
+              text: "{{ TOPBAR_SETTINGS.text_3|escapejs }}",
+              url: "{{ TOPBAR_SETTINGS.url_3|escapejs }}"
+            }
+          ];
+          let currentIndex = 0;
+          const textElement = document.getElementById('topbar-text');
+
+          function changeText() {
+            textElement.style.opacity = '0';
+            setTimeout(() => {
+              currentIndex = (currentIndex + 1) % textData.length;
+              const data = textData[currentIndex];
+
+              // If URL exists, make it a link
+              if (data.url && data.url !== '') {
+                textElement.innerHTML = '<a href="' + data.url + '" class="hover:underline">' + data.text + '</a>';
+              } else {
+                textElement.textContent = data.text;
+              }
+
+              textElement.style.opacity = '1';
+            }, 300);
+          }
+
+          // Change text every 4 seconds
+          setInterval(changeText, 4000);
+        })();
+      </script>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

@@ -1,0 +1,191 @@
+{% load static %}
+<footer class="relative isolate w-full border-t border-white/10 text-white bg-[#000000]">
+
+    <!-- Watermark -->
+    <div class="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none select-none px-10">
+        <p style="font-size:clamp(40px,14vw,260px);line-height:1;letter-spacing:0.08em;color:rgba(255,255,255,0.05);font-weight:900;text-transform:uppercase;white-space:nowrap;margin:0;">SMOKEKING</p>
+    </div>
+
+    <!-- All content above watermark -->
+    <div class="relative z-20">
+
+        <!-- Feature bar -->
+        <div class="border-b border-white/10">
+            <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 relative z-20 divide-y md:divide-y-0 divide-white/10">
+                <div class="flex flex-col items-center justify-center py-8 md:py-10 px-4 text-center group border-r border-b border-white/10 md:border-b-0">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mb-3 text-gray-500 group-hover:text-[#d4af37] transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span class="text-[9px] md:text-[10px] tracking-[0.2em] uppercase text-white">Premium Quality</span>
+                </div>
+                <div class="flex flex-col items-center justify-center py-8 md:py-10 px-4 text-center group border-b border-white/10 md:border-b-0 md:border-r">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mb-3 text-gray-500 group-hover:text-[#d4af37] transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span class="text-[9px] md:text-[10px] tracking-[0.2em] uppercase text-white">Global Shipping</span>
+                </div>
+                <div class="flex flex-col items-center justify-center py-8 md:py-10 px-4 text-center group border-r border-white/10">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mb-3 text-gray-500 group-hover:text-[#d4af37] transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span class="text-[9px] md:text-[10px] tracking-[0.2em] uppercase text-white">Secure Checkout</span>
+                </div>
+                <div class="flex flex-col items-center justify-center py-8 md:py-10 px-4 text-center group">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mb-3 text-gray-500 group-hover:text-[#d4af37] transition-all duration-300" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span class="text-[9px] md:text-[10px] tracking-[0.2em] uppercase text-white">Concierge Service</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main footer grid -->
+        <div class="max-w-7xl mx-auto border-b border-white/10">
+            <div class="grid grid-cols-1 lg:grid-cols-12">
+
+                <div class="lg:col-span-4 p-8 md:p-12 border-b lg:border-b-0 lg:border-r border-white/10">
+                    <div class="flex items-center gap-5 mb-10 group">
+
+    <!-- 🔥 PREMIUM GOLD GLOW CIRCLE -->
+    <div class="relative flex items-center justify-center 
+                w-16 h-16 md:w-20 md:h-20 
+                rounded-full 
+                bg-gradient-to-br from-[#C0A27A]/40 via-[#C0A27A]/20 to-transparent
+                p-[2px]
+                shadow-[0_0_25px_rgba(192,162,122,0.25)]
+                group-hover:shadow-[0_0_40px_rgba(192,162,122,0.45)]
+                transition-all duration-300">
+
+        <!-- INNER BLACK BASE -->
+        <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+
+            <img src="{% static 'logo.gif' %}" 
+                 class="h-10 md:h-12 object-contain brightness-110 
+                        transition-all duration-300 group-hover:scale-110" 
+                 alt="SmokeKing Logo">
+
+        </div>
+    </div>
+
+    <!-- TEXT -->
+    <div class="border-l border-white/10 pl-5">
+        <div class="text-xl md:text-2xl font-semibold text-[#E8DED3] tracking-tight uppercase">
+            SmokeKing<span class="text-[#C0A27A]">.in</span>
+        </div>
+
+        <div class="text-[10px] tracking-[0.35em] text-[#9A8570] uppercase font-bold">
+            Join Club SmokeKing
+        </div>
+    </div>
+
+</div>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-8 max-w-sm">
+                        Luxury smoking accessories crafted for collectors and connoisseurs.
+                        Premium lighters, cutters and accessories inspired by timeless heritage.
+                    </p>
+                    <form id="footerNewsletterForm" method="POST" action="{% url 'newsletter_subscribe' %}" class="w-full max-w-sm">
+                        {% csrf_token %}
+                        <div class="flex border border-white/10 focus-within:border-[#d4af37] transition-all overflow-hidden">
+                            <input type="email" name="email" id="footerNewsletterEmail" placeholder="Your email address" required
+                                   class="flex-1 bg-transparent px-4 py-3 text-[11px] tracking-widest outline-none text-white placeholder-gray-600">
+                            <button type="submit" class="px-5 bg-[#d4af37] text-black text-[10px] font-black uppercase tracking-widest hover:bg-[#c9a030] transition-all">JOIN</button>
+                        </div>
+                        <div id="footerNewsletterMsg" class="mt-2 text-xs"></div>
+                    </form>
+                    <script>
+                    document.getElementById('footerNewsletterForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const form = this, msg = document.getElementById('footerNewsletterMsg');
+                        const btn = form.querySelector('button[type=submit]'), fd = new FormData(form);
+                        btn.disabled = true; btn.textContent = '...';
+                        fetch(form.action, { method:'POST', body:fd, headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':fd.get('csrfmiddlewaretoken')} })
+                        .then(r=>r.json()).then(d=>{
+                            msg.innerHTML = d.success ? '<span style="color:#d4af37;">&#10003; '+d.message+'</span>' : '<span style="color:#f87171;">&#10007; '+d.message+'</span>';
+                            if(d.success) form.reset();
+                        }).catch(()=>{ msg.innerHTML='<span style="color:#f87171;">&#10007; Something went wrong.</span>'; })
+                        .finally(()=>{ btn.disabled=false; btn.textContent='JOIN'; });
+                    });
+                    </script>
+                </div>
+
+                <div class="lg:col-span-8 p-8 md:p-12 lg:p-14">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-10 md:gap-8">
+                        <div class="space-y-5 min-w-0">
+                            <h4 class="text-[10px] tracking-[0.25em] uppercase text-white font-bold opacity-50">About</h4>
+                            <ul class="space-y-3 text-gray-500 text-[13px]">
+                                <li><a href="{% url 'community:forum_home' %}" class="hover:text-[#d4af37] transition">Club SmokeKing</a></li>
+                                <li><a href="/encyclopedia/" class="hover:text-[#d4af37] transition">Heritage</a></li>
+                                <li><a href="{% url 'terms_and_conditions' %}" class="hover:text-[#d4af37] transition">Brand Protection</a></li>
+                                <li><a href="{% url 'contact_us' %}" class="hover:text-[#d4af37] transition">Store Locator</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-5 min-w-0">
+                            <h4 class="text-[10px] tracking-[0.25em] uppercase text-white font-bold opacity-50">Shop</h4>
+                            <ul class="space-y-3 text-gray-500 text-[13px]">
+                                <li><a href="/products/?category=premium_lighters" class="hover:text-[#d4af37] transition">Luxury Lighters</a></li>
+                                <li><a href="/products/?category=premium_cutters" class="hover:text-[#d4af37] transition">Cigar Cutters</a></li>
+                                <li><a href="/products/?category=cigarette-case" class="hover:text-[#d4af37] transition">Premium Cases</a></li>
+                                <li><a href="/products/?category=herb-grinder" class="hover:text-[#d4af37] transition">Herb Grinder</a></li>
+                                <li><a href="/products/?category=fuel" class="hover:text-[#d4af37] transition">Lighter Fuel</a></li>
+                                <li><a href="/page/sanji-lighters/" class="hover:text-[#d4af37] transition">Sanji Lighters</a></li>
+                                <li><a href="/page/vintage-lighters/" class="hover:text-[#d4af37] transition">Vintage Lighters</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-5 min-w-0">
+                            <h4 class="text-[10px] tracking-[0.25em] uppercase text-white font-bold opacity-50">Support</h4>
+                            <ul class="space-y-3 text-gray-500 text-[13px]">
+                                <li><a href="{% url 'contact_us' %}" class="hover:text-[#d4af37] transition">FAQ</a></li>
+                                <li><a href="{% url 'shipping_policy' %}" class="hover:text-[#d4af37] transition">Shipping</a></li>
+                                <li><a href="{% url 'return_policy' %}" class="hover:text-[#d4af37] transition">Returns</a></li>
+                                <li><a href="{% url 'contact_us' %}" class="hover:text-[#d4af37] transition">Track Order</a></li>
+                                <li><a href="{% url 'contact_us' %}" class="hover:text-[#d4af37] transition">Contact</a></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-5 min-w-0">
+                            <h4 class="text-[10px] tracking-[0.25em] uppercase text-white font-bold opacity-50">Follow</h4>
+                            <div class="flex flex-col gap-3 mt-1">
+                                <a href="https://www.instagram.com/smoke_king_india/" target="_blank" class="flex items-center gap-3 group">
+                                    <div class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-gray-500 group-hover:text-pink-500 group-hover:border-pink-500/50 transition-all">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                    </div>
+                                    <span class="text-[11px] text-gray-500 group-hover:text-white transition tracking-widest uppercase">Instagram</span>
+                                </a>
+                                <a href="https://x.com/smokeking_in" target="_blank" class="flex items-center gap-3 group">
+                                    <div class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-gray-500 group-hover:text-white group-hover:border-white/40 transition-all">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231z"/></svg>
+                                    </div>
+                                    <span class="text-[11px] text-gray-500 group-hover:text-white transition tracking-widest uppercase">Twitter</span>
+                                </a>
+                                <a href="https://wa.me/919266447355" target="_blank" class="flex items-center gap-3 group">
+                                    <div class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-gray-500 group-hover:text-green-500 group-hover:border-green-500/50 transition-all">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2C6.52 2 2.05 6.47 2.05 11.99c0 1.94.51 3.83 1.49 5.49L2 22l4.64-1.53a9.9 9.9 0 0 0 5.4 1.57h.01c5.52 0 9.99-4.47 9.99-9.99A9.96 9.96 0 0 0 12.04 2zm5.8 14.39c-.25.7-1.47 1.29-2.03 1.37-.52.08-1.17.11-1.88-.11-.43-.14-.99-.32-1.7-.63-3-1.3-4.96-4.5-5.11-4.7-.14-.2-1.22-1.62-1.22-3.1 0-1.48.78-2.2 1.05-2.5.27-.3.59-.37.79-.37h.57c.18.01.42-.07.66.51.24.59.82 2.06.89 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.45.52-.15.15-.3.31-.13.6.17.3.76 1.25 1.64 2.03 1.13 1.01 2.08 1.33 2.37 1.48.3.15.47.13.65-.08.18-.2.77-.9.97-1.21.2-.3.4-.25.67-.15.27.1 1.7.8 2 .94.3.15.5.22.57.35.07.12.07.7-.18 1.4z"/></svg>
+                                    </div>
+                                    <span class="text-[11px] text-gray-500 group-hover:text-white transition tracking-widest uppercase">WhatsApp</span>
+                                </a>
+                                <a href="https://www.youtube.com/@SmokeKing_India" target="_blank" class="flex items-center gap-3 group">
+                                    <div class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-gray-500 group-hover:text-red-500 group-hover:border-red-500/50 transition-all">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.8 15.5V8.5L15.5 12l-5.7 3.5z"/></svg>
+                                    </div>
+                                    <span class="text-[11px] text-gray-500 group-hover:text-white transition tracking-widest uppercase">YouTube</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="border-t border-white/10 py-6 px-6 md:px-12" style="background:rgba(0,0,0,0.3);">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-[10px] tracking-[0.2em] text-gray-600 uppercase font-bold">
+                    © 2026 <span class="text-white">SmokeKing.in</span>. Premium Smoking Accessories.
+                </div>
+                <div class="flex flex-wrap items-center gap-5 opacity-30">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" class="h-3 invert">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" class="h-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-3 invert">
+                </div>
+                <div class="flex gap-5 text-[10px] text-gray-600">
+                    <a href="{% url 'privacy_policy' %}" class="hover:text-white transition">Privacy</a>
+                    <a href="{% url 'terms_and_conditions' %}" class="hover:text-white transition">terms & conditions</a>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end relative z-10 -->
+</footer>

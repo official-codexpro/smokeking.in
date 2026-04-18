@@ -1,0 +1,268 @@
+<!-- Image Slider Banner -->
+<div class="relative w-full overflow-hidden md:max-h-[83vh]">
+  <!-- Slider Container -->
+  <div class="slider-container relative w-full md:max-h-[83vh]">
+    {% if banners %}
+      <!-- Mobile Slides (visible only on mobile) -->
+      {% for banner in banners %}
+      <div class="slide mobile-slide {% if forloop.first %}active{% endif %} md:hidden" >
+        {% if banner.link_url %}
+          <a href="{{ banner.link_url }}" class="block w-full h-full">
+            <img src="{{ banner.mobile_image.url }}" alt="{{ banner.alt_text|default:banner.title }}" class="w-full h-full object-cover" >
+          </a>
+        {% else %}
+          <img src="{{ banner.mobile_image.url }}" alt="{{ banner.alt_text|default:banner.title }}" class="w-full h-full object-cover" >
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <!-- Desktop Slides (visible on tablet and desktop) -->
+      {% for banner in banners %}
+      <div class="slide desktop-slide {% if forloop.first %}active{% endif %} hidden md:block" >
+        {% if banner.link_url %}
+          <a href="{{ banner.link_url }}" class="block w-full h-full">
+            <img src="{{ banner.desktop_image.url }}" alt="{{ banner.alt_text|default:banner.title }}" class="w-full h-full object-cover" >
+          </a>
+        {% else %}
+          <img src="{{ banner.desktop_image.url }}" alt="{{ banner.alt_text|default:banner.title }}" class="w-full h-full object-cover" >
+        {% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <!-- Fallback: No banners in database, show default -->
+      <div class="slide mobile-slide active relative w-full md:hidden" >
+        <img src="/gallery/gallery/banner/mobile/CIGARETTE-LIGHTER.webp" alt="Default Banner" class="w-full h-full object-cover" >
+      </div>
+      <div class="slide desktop-slide active hidden md:block relative w-full" >
+        <img src="/gallery/gallery/banner/ghost/5.webp" alt="Default Banner" class="w-full h-full object-cover" >
+      </div>
+    {% endif %}
+  </div>
+
+   
+
+  <!-- Navigation Arrows -->
+  <button class="slider-nav prev absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+  </button>
+  <button class="slider-nav next absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </button>
+
+  <!-- Slide Indicators -->
+  {% if banners %}
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
+    <!-- Desktop indicators -->
+    {% for banner in banners %}
+    <button class="indicator {% if forloop.first %}active{% endif %} w-3 h-3 bg-white rounded-full {% if forloop.first %}opacity-70{% else %}opacity-50{% endif %} hover:opacity-100 transition-opacity hidden md:block" data-slide="{{ forloop.counter0 }}"></button>
+    {% endfor %}
+
+    <!-- Mobile indicators -->
+    {% for banner in banners %}
+    <button class="indicator {% if forloop.first %}active{% endif %} w-3 h-3 bg-white rounded-full {% if forloop.first %}opacity-70{% else %}opacity-50{% endif %} hover:opacity-100 transition-opacity md:hidden" data-slide="{{ forloop.counter0 }}"></button>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+<!-- Slider CSS and JavaScript -->
+<style>
+.slide {
+  transition: opacity 0.8s ease-in-out;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+}
+
+.slide.active {
+  opacity: 1 !important;
+  pointer-events: auto;
+  position: relative;
+}
+
+.indicator.active {
+  opacity: 1 !important;
+  background-color: #FDE047 !important;
+}
+
+/* Mobile: PREMIUM FULL HEIGHT */
+@media (max-width: 767px) {
+
+  .slider-nav {
+    padding: 0.5rem;
+  }
+
+  .slider-nav svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .slide.mobile-slide {
+    height: 71vh !important;
+    max-height: 71vh !important;
+  }
+
+  .slide.mobile-slide img {
+    height: 100% !important;
+    width: 100%;
+    max-height: 71vh !important;
+    object-fit: cover;
+    object-position: center center;
+  }
+}
+
+/* Desktop: full viewport height minus some space for content below */
+@media (min-width: 768px) {
+  .relative.w-full.overflow-hidden {
+    max-height: 83vh !important;
+    height: 83vh !important;
+  }
+
+  .slider-container {
+    max-height: 83vh !important;
+    height: 83vh !important;
+  }
+
+  .slider-container > div:first-child {
+    max-height: 83vh !important;
+  }
+
+  .slide.desktop-slide {
+    max-height: 83vh !important;
+    height: 83vh !important;
+  }
+
+  .slide.desktop-slide img {
+    max-height: 83vh !important;
+    height: 83vh !important;
+    object-fit: cover !important;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const isMobile = window.innerWidth < 768;
+  const slides = document.querySelectorAll(isMobile ? '.mobile-slide' : '.desktop-slide');
+  const allIndicators = document.querySelectorAll('.indicator');
+  // Filter indicators for current device (mobile or desktop)
+  const indicators = Array.from(allIndicators).filter(ind => {
+    if (isMobile) {
+      return !ind.classList.contains('hidden');
+    } else {
+      return ind.classList.contains('md:block');
+    }
+  });
+  const prevBtn = document.querySelector('.slider-nav.prev');
+  const nextBtn = document.querySelector('.slider-nav.next');
+  let currentSlide = 0;
+  let slideInterval;
+
+  function showSlide(index) {
+    // Hide all slides of current type (mobile or desktop)
+    slides.forEach(slide => {
+      slide.classList.remove('active');
+      slide.style.opacity = '0';
+    });
+
+    // Remove active class from all indicators
+    const allIndicators = document.querySelectorAll('.indicator');
+    allIndicators.forEach(indicator => {
+      indicator.classList.remove('active');
+      indicator.style.opacity = '0.5';
+    });
+
+    // Show current slide
+    if (slides[index]) {
+      slides[index].classList.add('active');
+      slides[index].style.opacity = '1';
+    }
+
+    // Activate corresponding indicator for current device
+    if (indicators[index]) {
+      indicators[index].classList.add('active');
+      indicators[index].style.opacity = '1';
+    }
+
+    currentSlide = index;
+  }
+
+  function nextSlide() {
+    const next = (currentSlide + 1) % slides.length;
+    showSlide(next);
+  }
+
+  function prevSlide() {
+    const prev = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
+    showSlide(prev);
+  }
+
+  function startAutoSlide() {
+    slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+  }
+
+  function stopAutoSlide() {
+    clearInterval(slideInterval);
+  }
+
+  // Event listeners
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      stopAutoSlide();
+      nextSlide();
+      startAutoSlide();
+    });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      stopAutoSlide();
+      prevSlide();
+      startAutoSlide();
+    });
+  }
+
+  // Indicator click events
+  indicators.forEach((indicator, index) => {
+    if (index < slides.length) {
+      indicator.addEventListener('click', () => {
+        stopAutoSlide();
+        showSlide(index);
+        startAutoSlide();
+      });
+    }
+  });
+
+  // Pause auto-slide on hover/touch
+  const sliderContainer = document.querySelector('.slider-container');
+  if (sliderContainer) {
+    sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+    sliderContainer.addEventListener('mouseleave', startAutoSlide);
+    sliderContainer.addEventListener('touchstart', stopAutoSlide);
+    sliderContainer.addEventListener('touchend', () => {
+      setTimeout(startAutoSlide, 3000);
+    });
+  }
+
+  // Initialize first slide
+  if (slides.length > 0) {
+    showSlide(0);
+  }
+
+  // Start auto-slide
+  startAutoSlide();
+
+  // Debug info (remove in production)
+  console.log('Slider initialized:', {
+    isMobile: isMobile,
+    totalSlides: slides.length,
+    totalIndicators: indicators.length
+  });
+});
+</script>

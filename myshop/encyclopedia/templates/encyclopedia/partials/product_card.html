@@ -1,0 +1,86 @@
+{% load static %}
+<div class="bg-gray-800/60 border border-gray-700 hover:border-amber-500/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-amber-900/20 group" data-product-id="{{ product.pk }}">
+
+  <!-- Image / Icon area -->
+  <div class="relative bg-gradient-to-br from-gray-700 to-gray-800 h-44 flex items-center justify-center overflow-hidden">
+    {% if product.image %}
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+    {% else %}
+    <span class="text-7xl opacity-60 group-hover:scale-110 transition-transform duration-300">{{ product.get_type_display_icon }}</span>
+    {% endif %}
+
+    <!-- Type badge -->
+    <span class="absolute top-3 left-3 text-xs font-semibold px-2 py-1 rounded-full
+      {% if product.product_type == 'cigarette' %}bg-blue-900/80 text-blue-300
+      {% elif product.product_type == 'cigar' %}bg-amber-900/80 text-amber-300
+      {% elif product.product_type == 'lighter' %}bg-orange-900/80 text-orange-300
+      {% else %}bg-gray-700/80 text-gray-300{% endif %}">
+      {{ product.get_product_type_display }}
+    </span>
+
+    <!-- Country badge -->
+    {% if product.country_of_origin %}
+    <span class="absolute top-3 right-3 text-xs bg-gray-900/70 text-gray-300 px-2 py-1 rounded-full">
+      {{ product.country_of_origin }}
+    </span>
+    {% endif %}
+  </div>
+
+  <!-- Card Content -->
+  <div class="p-4">
+    <div class="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-1">{{ product.brand }}</div>
+    <h3 class="text-white font-bold text-base leading-tight mb-2 line-clamp-2">{{ product.name }}</h3>
+
+    {% if product.manufacturer %}
+    <div class="text-gray-400 text-xs mb-3">by {{ product.manufacturer }}</div>
+    {% endif %}
+
+    <!-- Key specs -->
+    <div class="grid grid-cols-2 gap-2 mb-4">
+      {% if product.nicotine_mg %}
+      <div class="bg-gray-700/50 rounded-lg p-2 text-center">
+        <div class="text-amber-400 font-bold text-sm">{{ product.nicotine_mg }} mg</div>
+        <div class="text-gray-400 text-xs">Nicotine</div>
+      </div>
+      {% endif %}
+      {% if product.tar_mg %}
+      <div class="bg-gray-700/50 rounded-lg p-2 text-center">
+        <div class="text-amber-400 font-bold text-sm">{{ product.tar_mg }} mg</div>
+        <div class="text-gray-400 text-xs">Tar</div>
+      </div>
+      {% endif %}
+      {% if product.strength %}
+      <div class="bg-gray-700/50 rounded-lg p-2 text-center">
+        <div class="text-amber-400 font-bold text-sm">{{ product.get_strength_display }}</div>
+        <div class="text-gray-400 text-xs">Strength</div>
+      </div>
+      {% endif %}
+      {% if product.price_india_inr %}
+      <div class="bg-gray-700/50 rounded-lg p-2 text-center">
+        <div class="text-amber-400 font-bold text-sm">&#8377;{{ product.price_india_inr }}</div>
+        <div class="text-gray-400 text-xs">India Price</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-2">
+      <a href="{{ product.get_absolute_url }}" class="flex-1 bg-amber-500 hover:bg-amber-400 text-gray-900 font-semibold text-xs text-center py-2 px-3 rounded-lg transition-colors">
+        View Details
+      </a>
+      <button
+        onclick="toggleCompare(event, '{{ product.slug }}', {{ product.pk }}, '{{ product.brand }} {{ product.name }}')"
+        data-slug="{{ product.slug }}"
+        data-pid="{{ product.pk }}"
+        class="compare-btn flex-shrink-0 border text-xs px-3 py-2 rounded-lg transition-all duration-200
+          {% if product.pk in compare_ids %}bg-amber-500/20 border-amber-500 text-amber-400{% else %}border-gray-600 text-gray-400 hover:border-amber-500 hover:text-amber-400{% endif %}"
+        title="{% if product.pk in compare_ids %}Remove from compare{% else %}Add to compare{% endif %}">
+        {% if product.pk in compare_ids %}
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        {% else %}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        {% endif %}
+      </button>
+    </div>
+  </div>
+</div>

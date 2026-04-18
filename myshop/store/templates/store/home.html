@@ -1,0 +1,324 @@
+{% extends 'store/base.html' %}
+{% load home_filters %}
+
+{% block title %}Premium Cigar Accessories - {{ SITE_NAME }}{% endblock %}
+
+{% block structured_data %}
+<!-- Homepage ItemList Schema for featured products -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ SITE_NAME }} - Premium Lighters & Smoking Accessories",
+  "description": "Shop premium lighters, cigar cutters, and luxury smoking accessories at SmokeKing. Free shipping across India, COD available.",
+  "url": "https://www.smokeking.in",
+  "isPartOf": {
+    "@id": "https://www.smokeking.in/#website"
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "Premium Smoking Accessories"
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Featured Products",
+    "numberOfItems": "{{ featured_products.count|default:10 }}",
+    "itemListElement": [
+      {% for product in featured_products|slice:":10" %}
+      {
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "url": "https://www.smokeking.in{{ product.get_absolute_url }}",
+        "name": "{{ product.name|escapejs }}"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
+{% block banner %}
+{% include 'store/includes/slider.html' %}
+{% endblock %}
+
+{% block content %}
+
+<!--marquee slider inside slider -->
+<div id="qp-announcement-bar" 
+     class="group w-full bg-black text-white text-[9px] sm:text-[10px] border-t-[2px] border-[#d4af37] overflow-hidden flex items-center">
+  
+  <div class="flex items-center w-max py-2.5 uppercase font-extrabold tracking-[0.3em] cursor-default 
+              animate-[scroll_25s_linear_infinite] 
+              group-hover:[animation-play-state:paused]">
+    
+    <div class="flex items-center shrink-0">
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">🔥</span> Premium Windproof Lighters
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">⚡</span> High-Performance Jet Flame
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">✨</span> Luxury Refillable Collection
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">💎</span> Exclusive SmokeKing Designs
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-[#d4af37] text-sm">★</span> The Ultimate Collector's Choice
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb] ml-6 md:ml-8"></div>
+    </div>
+
+    <div class="flex items-center shrink-0">
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">🔥</span> Premium Windproof Lighters
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">⚡</span> High-Performance Jet Flame
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">✨</span> Luxury Refillable Collection
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-sm">💎</span> Exclusive SmokeKing Designs
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb]"></div>
+
+      <span class="mx-6 md:mx-8 flex items-center gap-2 whitespace-nowrap">
+        <span class="text-[#d4af37] text-sm">★</span> The Ultimate Collector's Choice
+      </span>
+      <div class="w-1.5 h-1.5 bg-[#2563eb] ml-6 md:ml-8"></div>
+    </div>
+
+  </div>
+</div>
+<!--marquee slider inside slider End -->
+<style>
+  @keyframes scroll {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+
+  /* Optimized for performance */
+  .animate-\[scroll_25s_linear_infinite\] {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+</style>
+<!-- Featured Categories -->
+<section class="bg-gray-100" style="padding: 60px 0; overflow: hidden;">
+  <div style="max-width: 1480px; margin: 0 auto; padding: 0 20px; position: relative;">
+    
+   <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 60px; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="color: #d4af37; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5em; display: block;">
+            Refined Collections
+        </span>
+        
+        <h2 style="font-size: clamp(22px, 4vw, 36px); font-weight: 300; color: #111; text-transform: uppercase; letter-spacing: 0.2em; margin: 0; line-height: 1.2; font-family: 'Inter', sans-serif;">
+            Shop By <span style="font-weight: 700;">Category</span>
+        </h2>
+        
+        <div style="width: 60px; height: 1px; background: #d4af37; margin-top: 8px;"></div>
+    </div>
+
+    <a href="/products/" style="text-decoration: none; color: #9ca3af; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; border-bottom: 1px solid transparent; transition: all 0.3s ease;" 
+       onmouseover="this.style.color='#111'; this.style.borderBottom='1px solid #d4af37';" 
+       onmouseout="this.style.color='#9ca3af'; this.style.borderBottom='1px solid transparent';">
+        Explore All
+    </a>
+</div>
+
+    <div style="position: relative;">
+      <div class="swiper categorySwiper">
+        <div class="swiper-wrapper">
+          {% for cat in categories %}
+          <div class="swiper-slide">
+            <div class="sk-card-container">
+              <a href="/products/?category={{ cat.slug }}" class="sk-square-card">
+                <div class="sk-img-box">
+                  {% if cat.card_image %}
+                    <img src="{{ cat.card_image.url }}" alt="{{ cat.name }}" class="sk-cat-img" loading="lazy">
+                  {% else %}
+                    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f3f4f6; color:#999; font-size: 12px; font-weight: bold;">SMOKEKING</div>
+                  {% endif %}
+                </div>
+
+                <div class="sk-overlay"></div>
+
+                <div class="sk-content">
+                  <h3 class="sk-cat-name-text">{{ cat.name }}</h3>
+                  <span class="sk-btn-mini">
+                    Shop
+                    <svg style="margin-left: 5px; width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </span>
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="sk-cat-prev" class="btn-nav-cat btn-prev-pos">
+        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="stroke-width: 2.5;"><path d="M15 19l-7-7 7-7"/></svg>
+      </div>
+      <div id="sk-cat-next" class="btn-nav-cat btn-next-pos">
+        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="stroke-width: 2.5;"><path d="M9 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Premium Product Sections -->
+<div class="bg-gray-100">
+  {% include 'store/shortcodes/product_section.html' with category_slug="premium_lighters" count=8 %}
+  {% include 'store/includes/encylopedia_section.html' %}
+  {% include 'store/shortcodes/product_section.html' with category_slug="premium_cutters" count=8 %}
+  {% include 'store/shortcodes/product_section.html' with category_slug="herb-grinder" count=4 %}
+  {% include 'store/shortcodes/product_fuel.html' with category_slug="fuel" count=2 %}
+  {% include 'store/includes/instagram.html' %}
+</div>
+
+
+
+
+<!-- Newsletter Section -->
+<div class="py-12 relative overflow-hidden" style="background-color: #f0f0f0; border-top: 1px solid #e5e5e5;">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[2px] bg-[#C0A27A]"></div>
+
+  <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+    <h2 style="letter-spacing: 0.2em;" class="text-sm font-bold text-[#8E7958] uppercase mb-4">Newsletter</h2>
+    <h3 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Stay Updated</h3>
+    <p class="text-lg text-gray-600 mb-10 font-light italic" style="font-family: 'Source Serif Pro', serif;">
+      Get exclusive offers and be the first to know about new premium arrivals
+    </p>
+
+    <form method="POST" action="{% url 'newsletter_subscribe' %}" id="newsletterForm" class="flex flex-col sm:flex-row gap-0 max-w-xl mx-auto shadow-2xl rounded-sm overflow-hidden border border-gray-200">
+      {% csrf_token %}
+      <input type="email"
+             name="email"
+             id="newsletterEmail"
+             placeholder="Enter your email address"
+             required
+             style="background: #ffffff;"
+             class="flex-1 px-8 py-5 text-gray-800 placeholder-gray-400 focus:outline-none text-sm tracking-widest uppercase">
+      
+      <button type="submit" 
+              style="background: #1a1a1a;"
+              class="px-10 py-5 text-[#C0A27A] font-bold uppercase tracking-[0.2em] text-xs hover:bg-black hover:text-white transition-all duration-500">
+        Subscribe
+      </button>
+    </form>
+
+    <div id="newsletterMessage" class="mt-6 text-[11px] uppercase tracking-widest font-semibold text-gray-500"></div>
+  
+  </div>
+</div>
+<script>
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const form = this;
+  const formData = new FormData(form);
+  const messageDiv = document.getElementById('newsletterMessage');
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.textContent;
+
+  // Disable button and show loading state
+  submitButton.disabled = true;
+  submitButton.textContent = 'Subscribing...';
+  messageDiv.textContent = '';
+
+  fetch(form.action, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      messageDiv.innerHTML = '<span class="text-green-400">✓ ' + data.message + '</span>';
+      form.reset();
+    } else {
+      messageDiv.innerHTML = '<span class="text-red-400">✗ ' + data.message + '</span>';
+    }
+  })
+  .catch(error => {
+    messageDiv.innerHTML = '<span class="text-red-400">✗ An error occurred. Please try again.</span>';
+  })
+  .finally(() => {
+    submitButton.disabled = false;
+    submitButton.textContent = originalButtonText;
+  });
+});
+</script>
+<!--featured categories script-->
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new Swiper('.categorySwiper', {
+      slidesPerView: 2.2, // Mobile overlap for premium feel
+      spaceBetween: 12,
+      loop: true, // Infinite loop enabled
+      speed: 900,
+      grabCursor: true,
+      autoplay: {
+        delay: 3500,
+        disableOnInteraction: false,
+      },
+      navigation: {
+        nextEl: '#sk-cat-next',
+        prevEl: '#sk-cat-prev',
+      },
+      breakpoints: {
+        // Desktop (7xl container)
+        1280: {
+          slidesPerView: 5,
+          spaceBetween: 25,
+        },
+        // Laptop
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 20,
+        },
+        // Tablets
+        768: {
+          slidesPerView: 3.2,
+          spaceBetween: 15,
+        },
+        // Large Phones
+        480: {
+          slidesPerView: 2.5,
+          spaceBetween: 12,
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

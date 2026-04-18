@@ -1,0 +1,583 @@
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smokeking Store – Vintage Lighters</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWixYJQ0U9E9Q4KkC4R9E+o5DkFz0xRykG5qBP3ZiZsa1+l9I7IuP89xDSHLyfXRIlnJrA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+ body {
+  background: linear-gradient(
+    to right,
+    #8f6b2c 0%,
+    #d4af37 50%,
+    #8f6b2c 100%
+  );
+  color: #e6ded4;
+  letter-spacing: 0.01em;
+  min-height: 100vh;
+}
+
+    h1,
+    h2,
+    h3,
+    h4,
+    .brand-font {
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    /* ================= HAMBURGER ================= */
+
+    .hamburger {
+      width: 28px;
+      height: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 2px;
+      background: #E6DED4;
+      transition: transform .4s ease, opacity .3s ease;
+      transform-origin: center;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    /* HARD FIX: desktop pe hide enforce */
+    @media (min-width:1024px){
+      .hamburger{
+        display:none !important;
+      }
+      #mobileMenu{
+        display:none !important;
+      }
+    }
+
+  </style>
+</head>
+
+<!-- ================= NAVBAR SECTION : START{AAK} ================= -->
+<nav class="sticky top-0 z-50 bg-[#000000] backdrop-blur-md border-b border-[#2A241E]" style=" font-family: 'Libre Baskerville', serif;">
+
+  <!-- NAV ROW -->
+  <div class="max-w-7xl mx-auto px-6 h-[64px] flex items-center justify-between">
+
+    <!-- LOGO -->
+    <a href="{% url 'home' %}" class="flex items-center gap-3">
+      <img src="{% static 'logo.gif' %}" alt="{{ SITE_NAME }}logo" class="h-12 w-auto"/>
+      <span class="text-xl lg:text-2xl font-bold text-white brandbe-font">
+         {{ SITE_NAME }}<span class="text-[#C0A27A]"></span>
+      </span>
+    </a>
+
+    <!-- DESKTOP MENU -->
+    <div class="hidden lg:flex items-center gap-10 text-[13.5px] font-medium text-[#CFC6BB]">
+
+   <!-- ================= CATEGORIES DROPDOWN ================= -->
+    <div class="relative group">
+
+  <button class="flex items-center gap-1.5 px-2 py-1.5 text-[#E6DED4] hover:text-[#C0A27A] transition-all duration-300" style="background: transparent; border: none; cursor: pointer;">
+    <span class="text-sm font-medium">Categories</span>
+    <span class="text-[9px] transition-transform duration-700 group-hover:rotate-180 opacity-60">▼</span>
+  </button>
+
+  <div class="absolute left-0 top-full mt-2 w-[480px] 
+              bg-black/95 backdrop-blur-2xl 
+              border border-white/10 
+              shadow-[0_15px_40px_rgba(0,0,0,0.8)]
+              opacity-0 invisible -translate-y-2
+              group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
+              transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-[999]
+              overflow-hidden rounded-lg">
+    
+    <div style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, #C0A27A, #E6DED4, #C0A27A, transparent);"></div>
+
+    <div class="grid grid-cols-2 relative p-1">
+      
+      <div class="absolute inset-y-4 left-1/2 w-[0.5px]" 
+           style="background: linear-gradient(to bottom, transparent, rgba(192,162,122,0.2), transparent);"></div>
+
+      {% for cat in categories %}
+      <div class="relative group/item">
+          <a href="{% url 'product_list' %}?category={{ cat.slug }}"
+             class="flex items-center gap-4 px-4 py-4 transition-all duration-500 hover:bg-white/[0.03]" style="text-decoration: none;">
+            
+            <div class="relative shrink-0">
+                <div class="absolute inset-0 bg-[#C0A27A] blur-[10px] opacity-0 group-hover/item:opacity-20 transition-opacity duration-500"></div>
+                
+                <span class="relative w-10 h-10 rounded-lg border border-[#C0A27A]/20 flex items-center justify-center bg-[#0D0D0D]
+                             group-hover/item:border-[#C0A27A] group-hover/item:-rotate-3 transition-all duration-500 shadow-lg">
+                  
+                  {% if cat.slug == "premium_lighters" %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0A27A" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+                           {% elif cat.slug == "premium_cutters" %}
+            <i data-feather="scissors" class="w-5 h-5 text-[#C0A27A]"></i>
+
+          {% elif cat.slug == "cigarette-case" %}
+            <i data-feather="briefcase" class="w-5 h-5 text-[#C0A27A]"></i>
+
+          {% elif cat.slug == "premium_cigarette_ring" %}
+            <i data-feather="circle" class="w-5 h-5 text-[#C0A27A]"></i>
+
+          {% elif cat.slug == "Sanji_Lighter" %}
+                      <i data-feather="box" style="width: 20px; height: 20px; color: #C0A27A;"></i>
+          {% elif cat.slug == "herb-grinder" %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0A27A" stroke-width="1.5" class="group-hover/item:rotate-180 transition-transform duration-1000">
+                          <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2m0 16v2m8-10h2M2 12h2"></path>
+                      </svg>
+          {% elif cat.slug == "fuel" %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0A27A" stroke-width="1.5">
+                        <path d="M3 22L15 22"></path><path d="M4 9L14 9"></path><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"></path><path d="M14 13h2a2 2 0 0 1 2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2V11"></path><path d="M19 11l2-2"></path><line x1="7" y1="6" x2="11" y2="6"></line>
+                      </svg>
+
+          {% else %}
+            <i data-feather="box" class="w-5 h-5 text-[#C0A27A]"></i>
+          {% endif %}
+                </span>
+            </div>
+
+            <div class="flex flex-col gap-0">
+              <span class="text-[#F2F2F2] text-[14px] font-semibold group-hover/item:text-[#C0A27A] transition-colors duration-300">
+                {{ cat.name }}
+              </span>
+              <span class="text-[9px] text-[#9C9185] tracking-[0.5px] uppercase opacity-60">
+                Premium Series
+              </span>
+            </div>
+
+            <div class="ml-auto opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C0A27A" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </a>
+
+          <div class="mx-4 h-[0.5px]" style="background: linear-gradient(90deg, transparent, rgba(192,162,122,0.1), transparent);"></div>
+      </div>
+      {% endfor %}
+
+    </div>
+
+    <div class="bg-white/[0.02] p-2.5 text-center border-t border-[#C0A27A]/10">
+        <p class="text-[9px] text-[#C0A27A]/60 tracking-[3px] uppercase font-medium">Smokeking Collections</p>
+    </div>
+  </div>
+</div>
+
+<!-- Feather Icons Script (MANDATORY) -->
+<script src="https://unpkg.com/feather-icons"></script>
+<script>
+  feather.replace();
+</script>
+
+<a href="{% url 'product_list' %}" 
+   class="hover:text-[#C0A27A] transition">
+  All Products
+</a>
+
+<a href="/page/vintage-lighters/" 
+   class="hover:text-[#C0A27A] transition">
+  Vintage Lighters
+</a>
+
+<a href="/page/sanji-lighters/"
+   class="hover:text-[#C0A27A] transition">
+  Sanji Collection
+</a>
+
+
+
+</div>
+<!-- ================= RIGHT SIDE ================= -->
+<div class="hidden lg:flex items-center gap-7 text-[13.5px] text-[#CFC6BB]">
+
+  <!-- Cart -->
+  <a href="/cart/"
+     class="flex items-center gap-2 hover:text-[#C0A27A] transition group">
+    <i data-feather="shopping-cart"
+       class="w-5 h-5 group-hover:scale-110 transition"></i>
+    Cart
+  </a>
+
+  {% if user.is_authenticated %}
+
+  <!-- Logged In User -->
+  <div class="relative">
+
+    <button id="vintageUserBtn"
+            class="flex items-center gap-2 hover:text-[#C0A27A] transition">
+
+      <div class="w-8 h-8 bg-gradient-to-r from-[#8f6b2c] via-[#d4af37] to-[#8f6b2c]
+                  rounded-full flex items-center justify-center">
+        <span class="text-[#181310] font-bold text-sm">
+          {{ user.username|first|upper }}
+        </span>
+      </div>
+
+      <span class="font-medium">{{ user.username }}</span>
+
+      <i id="userChevron"
+         data-feather="chevron-down"
+         class="w-4 h-4 transition-transform duration-300"></i>
+
+    </button>
+
+    <!-- Dropdown -->
+    <div id="vintageUserMenu"
+         class="hidden absolute right-0 mt-3 w-48
+                bg-[#14100D] border border-[#2A241E]
+                rounded-xl shadow-2xl overflow-hidden z-50">
+
+      <div class="p-2">
+
+        <a href="{% url 'profile' %}"
+           class="flex items-center gap-3 px-4 py-3
+                  text-[#CFC6BB] hover:bg-[#1C1A17]
+                  rounded-lg transition">
+
+          <i data-feather="user"
+             class="w-5 h-5 text-[#C0A27A]"></i>
+          <span>Profile</span>
+        </a>
+
+        <a href="{% url 'logout' %}"
+           class="flex items-center gap-3 px-4 py-3
+                  text-red-400 hover:bg-red-900/20
+                  rounded-lg transition">
+
+          <i data-feather="log-out"
+             class="w-5 h-5"></i>
+          <span>Logout</span>
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+
+  {% else %}
+
+  <!-- Not Logged In -->
+  <a href="{% url 'login' %}"
+     class="flex items-center gap-2 hover:text-[#C0A27A] transition group">
+    <i data-feather="user"
+       class="w-5 h-5 group-hover:scale-110 transition"></i>
+    Login
+  </a>
+
+  <a href="{% url 'register' %}"
+     class="px-4 py-1.5 rounded-md
+            bg-gradient-to-r from-[#8f6b2c] via-[#d4af37] to-[#8f6b2c]
+            text-[#181310] font-semibold
+            hover:opacity-90 transition">
+    Register
+  </a>
+
+  {% endif %}
+
+</div>
+
+  <!-- MOBILE TOGGLE -->
+    <button id="mobileMenuBtn" class="lg:hidden hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+
+
+  <!-- ================= MOBILE MENU (INSIDE NAV) ================= -->
+  <div id="mobileMenu" class="lg:hidden w-full
+              bg-black backdrop-blur-xl
+              border-t border-[#2A241E]
+              overflow-hidden" style="max-height:0px; transition:max-height 0.45s ease;">
+
+    <div class="px-6 py-6 space-y-4 text-[#E6DED4]">
+
+      <!-- ================= CATEGORIES ================= -->
+    <div class="w-full">
+
+  <!-- Header -->
+  <button id="mobileCategoryBtn"
+    class="w-full flex items-center justify-between py-4 border-b border-[#2A241E]">
+
+    <div class="flex items-center gap-3">
+      <span class="w-9 h-9 rounded-xl bg-black border border-[#C0A27A]/40
+                   flex items-center justify-center">
+        <i data-feather="grid" class="w-4 h-4 text-[#C0A27A]"></i>
+      </span>
+
+      <span class="text-sm tracking-wider uppercase text-[#E6DED4]">
+        Categories
+      </span>
+    </div>
+
+    <i id="mobileCategoryIcon"
+       data-feather="chevron-down"
+       class="w-4 h-4 text-[#C0A27A] transition-transform duration-300">
+    </i>
+  </button>
+
+  <!-- Dropdown -->
+  <div id="mobileCategoryDropdown"
+       class="overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+
+    <div class="mt-2 space-y-1">
+
+      {% for cat in categories %}
+
+      <a href="{% url 'product_list' %}?category={{ cat.slug }}"
+         class="flex items-center gap-3 py-3 px-3
+                {% if not forloop.last %}border-b border-[#2A241E]{% endif %}
+                text-[#CFC6BB] hover:text-[#C0A27A]
+                hover:bg-[#1C1A17] rounded-lg transition duration-300">
+
+        <!-- ICON -->
+        <span class="w-9 h-9 rounded-lg bg-black border border-[#C0A27A]/40
+                     flex items-center justify-center">
+
+          {% if cat.slug == "premium_lighters" %}
+            <!-- Lighter Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C0A27A" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+
+
+          {% elif cat.slug == "premium_cutters" %}
+            <i data-feather="scissors" class="w-5 h-5 text-[#C0A27A]"></i>
+
+          {% elif cat.slug == "cigarette-case" %}
+            <i data-feather="briefcase" class="w-5 h-5 text-[#C0A27A]"></i>
+
+          {% elif cat.slug == "premium_cigarette_ring" %}
+            <i data-feather="circle" class="w-5 h-5 text-[#C0A27A]"></i>
+
+          {% elif cat.slug == "Sanji_Lighter" %}
+                      <i data-feather="box" style="width: 20px; height: 20px; color: #C0A27A;"></i>
+          {% elif cat.slug == "herb-grinder" %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0A27A" stroke-width="1.5" class="group-hover/item:rotate-180 transition-transform duration-1000">
+                          <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2m0 16v2m8-10h2M2 12h2"></path>
+                      </svg>
+          {% elif cat.slug == "fuel" %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0A27A" stroke-width="1.5">
+                        <path d="M3 22L15 22"></path><path d="M4 9L14 9"></path><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"></path><path d="M14 13h2a2 2 0 0 1 2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2V11"></path><path d="M19 11l2-2"></path><line x1="7" y1="6" x2="11" y2="6"></line>
+                      </svg>
+
+          {% else %}
+            <i data-feather="box" class="w-5 h-5 text-[#C0A27A]"></i>
+          {% endif %}
+
+        </span>
+
+        <!-- TEXT -->
+        {{ cat.name }}
+
+      </a>
+
+      {% endfor %}
+
+    </div>
+  </div>
+
+</div>
+      <!-- ================= MAIN LINKS ================= -->
+
+      <a href="{% url 'product_list' %}" class="flex items-center gap-3 py-3 border-b border-[#2A241E]
+       hover:text-[#C0A27A] transition duration-300">
+        <i data-feather="box" class="w-4 h-4"></i>
+        All Products
+      </a>
+
+      <a href="/page/vintage-lighters/" class="flex items-center gap-3 py-3 border-b border-[#2A241E]
+       hover:text-[#C0A27A] transition duration-300">
+        <i data-feather="star" class="w-4 h-4"></i>
+        Vintage Lighters
+      </a>
+
+      <a href="/page/sanji-lighters/" class="flex items-center gap-3 py-3 border-b border-[#2A241E]
+       hover:text-[#C0A27A] transition duration-300">
+        <i data-feather="award" class="w-4 h-4"></i>
+        Sanji Collection
+      </a>
+
+      <a href="{% url 'encyclopedia:index' %}" class="flex items-center gap-3 py-3 border-b border-[#2A241E]
+       hover:text-[#C0A27A] transition duration-300">
+        <i data-feather="book-open" class="w-4 h-4"></i>
+        Encyclopedia
+      </a>
+
+      <!-- ================= ACTION BUTTONS ================= -->
+
+      <div class="pt-4 space-y-3">
+
+        <a href="/cart/" class="flex items-center justify-center gap-2 py-3 rounded-lg
+         bg-[#1C1A17] border border-[#2A241E]
+         hover:text-[#C0A27A] transition duration-300">
+          <i data-feather="shopping-cart" class="w-4 h-4"></i>
+          View Cart
+        </a>
+
+        {% if user.is_authenticated %}
+        <!-- Logged in user section -->
+        <div class="flex items-center gap-3 p-3 bg-[#1C1A17] border border-[#2A241E] rounded-lg">
+          <div class="w-10 h-10 bg-gradient-to-r from-[#8f6b2c] via-[#d4af37] to-[#8f6b2c] rounded-full flex items-center justify-center">
+            <span class="text-[#181310] font-bold">{{ user.username|first|upper }}</span>
+          </div>
+          <div>
+            <div class="font-semibold text-[#E6DED4]">{{ user.username }}</div>
+            <div class="text-xs text-[#9C9185]">{{ user.email }}</div>
+          </div>
+        </div>
+        <a href="{% url 'profile' %}" class="flex items-center justify-center gap-2 py-3 rounded-lg bg-[#1C1A17] border border-[#2A241E] hover:text-[#C0A27A] transition duration-300">
+          <i data-feather="user" class="w-4 h-4"></i>
+          Profile
+        </a>
+        <a href="{% url 'logout' %}" class="flex items-center justify-center gap-2 py-3 rounded-lg bg-red-900/30 border border-red-800/50 text-red-400 hover:bg-red-900/50 transition duration-300">
+          <i data-feather="log-out" class="w-4 h-4"></i>
+          Logout
+        </a>
+        {% else %}
+        <!-- Not logged in -->
+        <a href="{% url 'login' %}" class="flex items-center justify-center gap-2 py-3 rounded-lg bg-[#1C1A17] border border-[#2A241E] hover:text-[#C0A27A] transition duration-300">
+          <i data-feather="user" class="w-4 h-4"></i>
+          Login
+        </a>
+        <a href="{% url 'register' %}" class="flex items-center justify-center gap-2 py-3 rounded-lg bg-gradient-to-r from-[#8f6b2c] via-[#d4af37] to-[#8f6b2c] text-[#181310] font-semibold hover:opacity-90 transition duration-300">
+          <i data-feather="user-plus" class="w-4 h-4"></i>
+          Register
+        </a>
+        {% endif %}
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</nav>
+<!-- ================= NEVBAR END================= -->
+
+<script src="https://unpkg.com/feather-icons"></script>
+<script>
+  feather.replace();
+</script>
+<script>
+/* ================= MOBILE MENU (SCROLLABLE VERSION) ================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("mobileMenuBtn");
+  const menu = document.getElementById("mobileMenu");
+
+  if (!btn || !menu) return;
+
+  btn.addEventListener("click", function () {
+    const isOpen = menu.style.maxHeight && menu.style.maxHeight !== "0px";
+
+    if (!isOpen) {
+      // 1. Max height ko screen ke hisaab se limit karo
+      menu.style.maxHeight = "calc(100vh - 80px)"; 
+      // 2. Scroll enable karo
+      menu.style.overflowY = "auto";
+      // 3. Background body ko freeze karo
+      document.body.style.overflow = "hidden";
+      
+      // Optional: Agar header bada hai toh smooth scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      menu.style.maxHeight = "0px";
+      menu.style.overflowY = "hidden";
+      document.body.style.overflow = "";
+    }
+
+    btn.classList.toggle("active");
+  });
+});
+
+/* ================= CATEGORY DROPDOWN FIX ================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("mobileCategoryBtn");
+  const dropdown = document.getElementById("mobileCategoryDropdown");
+  const icon = document.getElementById("mobileCategoryIcon");
+  const menu = document.getElementById("mobileMenu"); // Main menu reference
+
+  if (!btn || !dropdown) return;
+
+  btn.addEventListener("click", function () {
+    const isOpening = dropdown.style.maxHeight === "0px" || !dropdown.style.maxHeight;
+
+    if (isOpening) {
+      dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+      icon.style.transform = "rotate(180deg)";
+      
+      // IMPORTANT: Jab category khule, toh main menu ki scroll height update ho sakti hai
+      // Par humne 100vh fix rakha hai toh ye auto scroll handle karega.
+    } else {
+      dropdown.style.maxHeight = "0px";
+      icon.style.transform = "rotate(0deg)";
+    }
+  });
+});
+</script>
+<script src="https://unpkg.com/feather-icons"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // Feather Icons render
+  if (window.feather) {
+    feather.replace();
+  }
+
+  const userBtn = document.getElementById("vintageUserBtn");
+  const userMenu = document.getElementById("vintageUserMenu");
+  const userChevron = document.getElementById("userChevron");
+
+  if (userBtn && userMenu) {
+
+    // Toggle dropdown
+    userBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+
+      userMenu.classList.toggle("hidden");
+      userChevron.classList.toggle("rotate-180");
+    });
+
+    // Close on outside click
+    document.addEventListener("click", function (e) {
+      if (!userBtn.contains(e.target) && !userMenu.contains(e.target)) {
+        userMenu.classList.add("hidden");
+        userChevron.classList.remove("rotate-180");
+      }
+    });
+
+  }
+
+});
+</script>

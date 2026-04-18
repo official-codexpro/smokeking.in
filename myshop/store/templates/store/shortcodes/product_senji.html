@@ -1,0 +1,122 @@
+{% load home_filters %}
+
+{% with category=categories|get_category_by_slug:category_slug %}
+{% if category %}
+{% with products=category|active_products|slice_items:count %}
+
+<section class="relative bg-transparent min-[2100px]:px-[10%] border-b-4 border-[#d4af37] overflow-hidden">
+
+   <!-- Warm Fire Glow Center -->
+  <div class="absolute -top-40 left-1/2 -translate-x-1/2 
+              w-[1000px] h-[1000px]
+              bg-[#ff7a1a]/20 blur-[260px] rounded-full">
+  </div>
+
+  <!-- Deep Red Ambient Glow -->
+  <div class="absolute top-0 left-0 
+              w-[700px] h-[700px]
+              bg-[#7a0000]/25 blur-[220px] rounded-full">
+  </div>
+
+  <!-- Golden Soft Light (Right Side) -->
+  <div class="absolute bottom-[-200px] right-[-100px] 
+              w-[800px] h-[800px]
+              bg-[#d4af37]/20 blur-[240px] rounded-full">
+  </div>
+
+  <!-- Warm Dark Overlay Depth -->
+  <div class="absolute inset-0 
+              bg-gradient-to-t from-black/70 via-transparent to-black/50">
+  </div>
+
+  <!-- GRID WRAPPER (NO EXTRA MARGIN) -->
+<div class="relative grid
+            grid-cols-2
+            lg:grid-cols-4
+            gap-0
+            bg-transparent">
+
+    {% for product in products %}
+    {% if 'inspired' not in product.get_display_title|lower %}
+
+    <!-- CARD -->
+<a href="{% url 'product_detail' product.slug %}"
+   class="group relative w-full
+          flex flex-col
+          overflow-hidden
+          bg-transparent
+          transition-all duration-500"
+style="border: 1px solid rgba(212, 175, 55, 0.08);">
+  <div class="absolute inset-0 z-10 pointer-events-none
+              bg-transparent">
+  </div>
+
+  <div class="relative z-20
+              h-[220px] sm:h-[340px] md:h-[380px]
+              flex items-center justify-center
+              px-4 pt-4 sm:px-6 sm:pt-8">
+
+    {% if product.images.first or product.image %}
+      <img src="{% if product.images.first %}{{ product.images.first.image.url }}{% else %}{{ product.image.url }}{% endif %}"
+           alt="{{ product.name }}"
+           loading="lazy"
+           class="object-contain
+                  max-h-full
+                  w-auto
+                  transition duration-700 ease-out
+                  group-hover:scale-[1.05]" />
+    {% else %}
+      <div class="text-white/30 text-xs uppercase tracking-widest">No Image</div>
+    {% endif %}
+
+  </div>
+
+  <div class="relative z-20 mx-8 h-[0.5px]
+              bg-gradient-to-r from-transparent via-[#d4af37]/30 to-transparent">
+  </div>
+
+  <div class="relative z-20
+              px-4 py-4 sm:px-6 sm:py-6">
+
+    <h5 class="text-xs sm:text-base md:text-lg
+               text-white font-medium
+               tracking-wide
+               leading-tight line-clamp-2"
+        style="text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em;">
+      {{ product.get_display_title }}
+    </h5>
+
+    <div class="flex justify-between items-end mt-3 sm:mt-5">
+
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] sm:text-sm text-[#d4af37] tracking-tighter sm:tracking-wide">
+          ★ ★ ★ ★ ★
+        </span>
+        <span class="text-[10px] text-white/40 uppercase tracking-tighter">
+          {{ product.reviews.count|default:"2" }} Reviews
+        </span>
+      </div>
+
+      <span class="text-sm md:text-lg
+                   text-[#d4af37]
+                   font-bold tracking-tight"
+            style="text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);">
+        ₹{{ product.price }}
+      </span>
+
+    </div>
+
+  </div>
+
+</a>
+
+    {% endif %}
+    {% endfor %}
+
+  </div>
+
+</section>
+
+{% endwith %}
+{% endif %}
+{% endwith %}

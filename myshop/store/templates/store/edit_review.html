@@ -1,0 +1,261 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Your Review</h1>
+
+            <!-- Product Info -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                <div class="flex items-center space-x-4">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-16 h-16 object-cover rounded">
+                    {% endif %}
+                    <div>
+                        <h3 class="font-semibold text-gray-800">{{ product.name }}</h3>
+                        <p class="text-gray-600">Rs.{{ product.price }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Form -->
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Rating -->
+                <div>
+                    <label for="{{ form.rating.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.rating.label }}
+                    </label>
+                    {{ form.rating }}
+                    {% if form.rating.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.rating.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Title -->
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.title.label }}
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.title.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Review -->
+                <div>
+                    <label for="{{ form.review.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.review.label }}
+                    </label>
+                    {{ form.review }}
+                    {% if form.review.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.review.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Existing Media -->
+                {% if existing_media %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Your Photos/Videos
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        {% for media in existing_media %}
+                        <div class="relative group">
+                            {% if media.media_type == 'video' %}
+                            <div class="w-full h-24 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
+                                <video src="{{ media.file.url }}" class="w-full h-full object-cover"></video>
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/30">
+                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            {% else %}
+                            <img src="{{ media.file.url }}" class="w-full h-24 object-cover rounded-lg">
+                            {% endif %}
+
+                            <!-- Delete checkbox -->
+                            <label class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                                <input type="checkbox" name="delete_media" value="{{ media.id }}" class="hidden peer">
+                                <svg class="w-4 h-4 peer-checked:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <svg class="w-4 h-4 hidden peer-checked:block" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Hover and click the X to mark media for deletion</p>
+                </div>
+                {% endif %}
+
+                <!-- Add More Media -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Add More Photos or Videos
+                    </label>
+                    <p class="text-xs text-gray-500 mb-3">Max 5 files total. Images up to 5MB, videos up to 50MB.</p>
+
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer" id="media-drop-zone">
+                        <input type="file" name="media_files" id="media-upload-input" class="hidden" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" multiple>
+
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+
+                        <p class="mt-2 text-sm text-gray-600">
+                            <span class="text-blue-600 font-medium">Click to upload</span> or drag and drop
+                        </p>
+                    </div>
+
+                    <!-- Preview Container for new uploads -->
+                    <div id="media-preview" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+
+                    {% if media_form.media_files.errors %}
+                        <p class="text-red-600 text-sm mt-2">{{ media_form.media_files.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Update Review
+                    </button>
+                    <a href="{% url 'product_detail' product.slug %}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+
+            <!-- Delete Review Form (separate form) -->
+            <div class="mt-6 pt-6 border-t">
+                <form method="post" action="{% url 'delete_review' product.slug review.id %}" onsubmit="return confirm('Are you sure you want to delete this review? This action cannot be undone.')">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                        Delete Review
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('media-drop-zone');
+    const fileInput = document.getElementById('media-upload-input');
+    const previewContainer = document.getElementById('media-preview');
+    let selectedFiles = new DataTransfer();
+
+    // Click to open file dialog
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop events
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-500', 'bg-blue-50');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+
+    function handleFiles(files) {
+        const maxFiles = 5;
+        const existingCount = {{ existing_media.count|default:0 }};
+        const currentNewCount = selectedFiles.items.length;
+        const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/quicktime'];
+
+        for (let file of files) {
+            if (existingCount + currentNewCount + 1 > maxFiles) {
+                alert(`Maximum 5 files allowed. You have ${existingCount} existing files.`);
+                break;
+            }
+
+            const isImage = allowedImageTypes.includes(file.type);
+            const isVideo = allowedVideoTypes.includes(file.type);
+
+            if (!isImage && !isVideo) {
+                alert(`File "${file.name}" has an unsupported format`);
+                continue;
+            }
+
+            if (isImage && file.size > 5 * 1024 * 1024) {
+                alert(`Image "${file.name}" is too large. Maximum size is 5MB`);
+                continue;
+            }
+
+            if (isVideo && file.size > 50 * 1024 * 1024) {
+                alert(`Video "${file.name}" is too large. Maximum size is 50MB`);
+                continue;
+            }
+
+            selectedFiles.items.add(file);
+            addPreview(file);
+        }
+
+        fileInput.files = selectedFiles.files;
+    }
+
+    function addPreview(file) {
+        const isVideo = file.type.startsWith('video/');
+        const div = document.createElement('div');
+        div.className = 'relative group';
+
+        if (isVideo) {
+            div.innerHTML = `
+                <div class="w-full h-24 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
+                    <video src="${URL.createObjectURL(file)}" class="w-full h-full object-cover"></video>
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                        </svg>
+                    </div>
+                </div>
+            `;
+        } else {
+            div.innerHTML = `<img src="${URL.createObjectURL(file)}" class="w-full h-24 object-cover rounded-lg">`;
+        }
+
+        // Add remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.onclick = () => {
+            const index = Array.from(previewContainer.children).indexOf(div);
+            const newFiles = new DataTransfer();
+            for (let i = 0; i < selectedFiles.items.length; i++) {
+                if (i !== index) {
+                    newFiles.items.add(selectedFiles.files[i]);
+                }
+            }
+            selectedFiles = newFiles;
+            fileInput.files = selectedFiles.files;
+            div.remove();
+        };
+
+        div.appendChild(removeBtn);
+        previewContainer.appendChild(div);
+    }
+});
+</script>
+{% endblock %}

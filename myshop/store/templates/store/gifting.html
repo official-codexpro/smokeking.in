@@ -1,0 +1,272 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Premium Lighter Gifts – Corporate & Wedding Gifting | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Send premium lighters as corporate gifts, wedding favours, or Diwali hampers. Bulk orders welcome. Zippo, S.T. Dupont, Clipper — India's finest lighter gifting destination.{% endblock %}
+{% block meta_keywords %}corporate gifting lighters India, premium lighter gift, Zippo gift India, Diwali lighter gift, wedding gift lighter, bulk lighter gifting{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Premium Lighter Corporate Gifting",
+  "provider": { "@type": "Organization", "name": "{{ SITE_NAME }}", "url": "https://www.smokeking.in" },
+  "description": "Curated premium lighter gifting for corporates, weddings, and special occasions across India.",
+  "areaServed": "IN",
+  "serviceType": "Corporate Gifting"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-950">
+
+  <!-- ══ HERO ══ -->
+  <div class="relative overflow-hidden bg-gradient-to-br from-gray-900 via-amber-950 to-gray-900 py-20 md:py-28">
+    <div class="absolute inset-0 opacity-15">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-amber-400 rounded-full filter blur-3xl"></div>
+      <div class="absolute bottom-0 left-0 w-72 h-72 bg-amber-700 rounded-full filter blur-3xl"></div>
+    </div>
+    <div class="relative max-w-5xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/></svg>
+        Corporate &amp; Wedding Gifting
+      </div>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight">
+        Gifts That <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">Light Up</span><br>Every Occasion
+      </h1>
+      <p class="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
+        Premium lighters for corporate events, Diwali hampers, wedding favours, client appreciation, and milestone gifts. Authentic brands, bulk pricing, India-wide delivery.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#inquire" class="bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold px-8 py-3 rounded-xl transition-colors">
+          Send Gifting Inquiry
+        </a>
+        <a href="#products" class="border border-amber-500/50 text-amber-400 hover:bg-amber-500/10 font-semibold px-8 py-3 rounded-xl transition-colors">
+          Browse Gift Products
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ WHY LIGHTERS ══ -->
+  <div class="max-w-5xl mx-auto px-4 py-14">
+    <h2 class="text-2xl font-bold text-white text-center mb-10">Why Premium Lighters Make the Perfect Gift</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {% for item in "1234" %}
+      <div class="bg-gray-800/60 border border-gray-700 rounded-xl p-5 text-center hover:border-amber-500/50 transition-colors">
+        {% if forloop.counter == 1 %}
+        <div class="text-4xl mb-3">🏆</div>
+        <h3 class="text-white font-semibold mb-2">Premium Feel</h3>
+        <p class="text-gray-400 text-sm">Brands like Zippo, Clipper, and S.T. Dupont carry instant prestige that recipients notice and remember.</p>
+        {% elif forloop.counter == 2 %}
+        <div class="text-4xl mb-3">♾</div>
+        <h3 class="text-white font-semibold mb-2">Lifetime Use</h3>
+        <p class="text-gray-400 text-sm">Unlike consumables, a quality lighter lasts years — your brand stays with the recipient long after the event.</p>
+        {% elif forloop.counter == 3 %}
+        <div class="text-4xl mb-3">🎁</div>
+        <h3 class="text-white font-semibold mb-2">Universal Appeal</h3>
+        <p class="text-gray-400 text-sm">Suitable for smokers and non-smokers alike. Candles, fireplaces, gas stoves — everyone uses a lighter.</p>
+        {% else %}
+        <div class="text-4xl mb-3">📦</div>
+        <h3 class="text-white font-semibold mb-2">Bulk Pricing</h3>
+        <p class="text-gray-400 text-sm">Special rates for orders of 10+, 50+, and 100+ units. Custom packaging and branding available on request.</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+  <!-- ══ PRODUCT GRID ══ -->
+  <div id="products" class="max-w-6xl mx-auto px-4 py-14">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-2xl font-bold text-white">Popular Gift Products</h2>
+        <p class="text-gray-400 text-sm mt-1">All products available for bulk orders with special pricing</p>
+      </div>
+      <a href="{% url 'product_list' %}" class="text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors">
+        View All Products &rarr;
+      </a>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+      {% for product in gift_products %}
+      <div class="group bg-gray-800/60 border border-gray-700 hover:border-amber-500/60 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-amber-900/20">
+        <!-- Image -->
+        <a href="{{ product.get_absolute_url }}" class="block relative bg-gradient-to-br from-gray-700 to-gray-800 h-44 overflow-hidden">
+          {% if product.gif %}
+          <img src="{{ product.gif.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          {% elif product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          {% else %}
+          <div class="w-full h-full flex items-center justify-center">
+            <svg class="w-14 h-14 text-gray-600 group-hover:text-amber-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+          </div>
+          {% endif %}
+          {% if product.get_discount_percentage %}
+          <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded">
+            -{{ product.get_discount_percentage }}%
+          </span>
+          {% endif %}
+          <span class="absolute top-2 right-2 bg-amber-500/90 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">
+            Gift Pick
+          </span>
+        </a>
+        <!-- Info -->
+        <div class="p-4">
+          {% if product.brand_new %}
+          <div class="text-amber-400 text-xs font-semibold uppercase tracking-wide mb-1">{{ product.brand_new.name }}</div>
+          {% elif product.brand %}
+          <div class="text-amber-400 text-xs font-semibold uppercase tracking-wide mb-1">{{ product.brand }}</div>
+          {% endif %}
+          <a href="{{ product.get_absolute_url }}" class="block text-white font-semibold text-sm leading-tight mb-3 hover:text-amber-400 transition-colors line-clamp-2">
+            {{ product.title2|default:product.name }}
+          </a>
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-amber-400 font-bold text-base">&#8377;{{ product.price }}</span>
+              {% if product.mrp and product.mrp > product.price %}
+              <span class="text-gray-500 text-xs line-through ml-1">&#8377;{{ product.mrp }}</span>
+              {% endif %}
+            </div>
+            <a href="{{ product.get_absolute_url }}" class="text-xs border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-gray-900 px-3 py-1 rounded-lg transition-all duration-200 font-medium">
+              View
+            </a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-span-4 text-center py-16 text-gray-400">No products found. Check back soon.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ══ PROCESS ══ -->
+  <div class="bg-gray-900/60 border-y border-gray-800 py-14">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-2xl font-bold text-white mb-10">How Our Gifting Works</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+        {% for step in "1234" %}
+        <div class="relative">
+          {% if not forloop.last %}
+          <div class="hidden sm:block absolute top-6 left-[60%] w-full h-px bg-amber-700/30"></div>
+          {% endif %}
+          <div class="relative z-10">
+            <div class="w-12 h-12 bg-amber-500 text-gray-900 font-bold text-lg rounded-full flex items-center justify-center mx-auto mb-3">
+              {{ forloop.counter }}
+            </div>
+            {% if forloop.counter == 1 %}
+            <div class="text-white font-semibold text-sm mb-1">Send Inquiry</div>
+            <div class="text-gray-400 text-xs">Fill the form below with occasion, quantity and budget</div>
+            {% elif forloop.counter == 2 %}
+            <div class="text-white font-semibold text-sm mb-1">Get Quote</div>
+            <div class="text-gray-400 text-xs">We respond within 24 hours with bulk pricing</div>
+            {% elif forloop.counter == 3 %}
+            <div class="text-white font-semibold text-sm mb-1">Confirm Order</div>
+            <div class="text-gray-400 text-xs">Choose products, confirm packaging and delivery date</div>
+            {% else %}
+            <div class="text-white font-semibold text-sm mb-1">Delivered</div>
+            <div class="text-gray-400 text-xs">Pan-India delivery with tracking, on time for your event</div>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ INQUIRY FORM ══ -->
+  <div id="inquire" class="max-w-2xl mx-auto px-4 py-16">
+    <div class="bg-gray-800/60 border border-gray-700 rounded-2xl p-8">
+      {% if submitted %}
+      <div class="text-center py-8">
+        <div class="text-5xl mb-4">✅</div>
+        <h2 class="text-2xl font-bold text-white mb-2">Inquiry Received!</h2>
+        <p class="text-gray-300 mb-6">Thank you! Our team will contact you within 24 hours with pricing and options.</p>
+        <a href="{% url 'gifting' %}" class="bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold px-6 py-2.5 rounded-xl transition-colors">
+          Submit Another Inquiry
+        </a>
+      </div>
+      {% else %}
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-white mb-2">Send a Gifting Inquiry</h2>
+        <p class="text-gray-400 text-sm">Free consultation — no commitment required</p>
+      </div>
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 text-xs font-medium uppercase tracking-wider mb-1.5">Your Name *</label>
+            <input type="text" name="name" required placeholder="Rahul Sharma"
+              class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-gray-400 text-xs font-medium uppercase tracking-wider mb-1.5">Phone Number</label>
+            <input type="tel" name="phone" placeholder="+91 98765 43210"
+              class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-400 text-xs font-medium uppercase tracking-wider mb-1.5">Email Address</label>
+          <input type="email" name="email" placeholder="you@company.com"
+            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 text-xs font-medium uppercase tracking-wider mb-1.5">Occasion</label>
+            <select name="occasion" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+              <option value="">Select occasion...</option>
+              <option>Corporate Event</option>
+              <option>Diwali Hamper</option>
+              <option>Wedding Favour</option>
+              <option>Client Gift</option>
+              <option>Employee Recognition</option>
+              <option>Birthday / Anniversary</option>
+              <option>Product Launch</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-400 text-xs font-medium uppercase tracking-wider mb-1.5">Quantity Needed</label>
+            <select name="quantity" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+              <option value="">Select quantity...</option>
+              <option>10–25 pieces</option>
+              <option>25–50 pieces</option>
+              <option>50–100 pieces</option>
+              <option>100–250 pieces</option>
+              <option>250+ pieces</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-400 text-xs font-medium uppercase tracking-wider mb-1.5">Message / Requirements</label>
+          <textarea name="message" rows="3" placeholder="Tell us your budget, preferred brands, custom packaging needs, or delivery date..."
+            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 resize-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold py-3 rounded-xl transition-colors text-sm">
+          Submit Gifting Inquiry
+        </button>
+        <p class="text-gray-500 text-xs text-center">Or WhatsApp us directly for instant response</p>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ══ ENCYCLOPEDIA CTA ══ -->
+  <div class="max-w-5xl mx-auto px-4 pb-14">
+    <div class="bg-gray-800/40 border border-gray-700 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-6">
+      <div class="text-5xl flex-shrink-0">📖</div>
+      <div class="flex-1 text-center sm:text-left">
+        <h3 class="text-white font-bold text-lg mb-1">Not sure which lighter to gift?</h3>
+        <p class="text-gray-400 text-sm">Browse our Tobacco Encyclopedia — detailed specs, brand history, and pricing for every major lighter and smoking accessory.</p>
+      </div>
+      <a href="{% url 'encyclopedia:index' %}" class="flex-shrink-0 border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-gray-900 font-semibold px-6 py-2.5 rounded-xl transition-all duration-200 whitespace-nowrap">
+        Open Encyclopedia &rarr;
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Order – SmokeKing Admin</title>
+</head>
+<body style="margin:0;padding:0;background:#1a1a1a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a1a;padding:40px 0;">
+  <tr><td align="center">
+    <table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;background:#242424;border:1px solid #333;">
+
+      <!-- Header -->
+      <tr>
+        <td style="padding:28px 36px;border-bottom:2px solid #c9a96e;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td>
+                <p style="margin:0;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#c9a96e;font-weight:700;">SmokeKing Admin</p>
+                <h1 style="margin:6px 0 0;font-size:20px;font-weight:400;color:#fff;letter-spacing:0.1em;">New Order Received</h1>
+              </td>
+              <td align="right">
+                <div style="background:#c9a96e;color:#111;padding:8px 16px;display:inline-block;font-size:18px;font-weight:700;letter-spacing:0.05em;">#{{ order.id }}</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Alert Bar -->
+      <tr>
+        <td style="background:#2e2e2e;padding:14px 36px;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="font-size:12px;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Placed on</td>
+              <td align="right" style="font-size:12px;color:#c9a96e;">{{ order.created_at|date:"d M Y, H:i" }}</td>
+            </tr>
+            <tr>
+              <td style="font-size:12px;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;padding-top:4px;">Payment</td>
+              <td align="right" style="font-size:12px;color:#fff;padding-top:4px;">
+                {% if order.payment_method == 'cod' %}Cash on Delivery{% else %}Online Payment{% endif %}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Customer Info -->
+      <tr>
+        <td style="padding:28px 36px;border-bottom:1px solid #333;">
+          <p style="margin:0 0 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#c9a96e;font-weight:700;">Customer</p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="50%" valign="top">
+                <p style="margin:0;font-size:15px;font-weight:600;color:#fff;">{{ order.full_name }}</p>
+                <p style="margin:4px 0 0;font-size:13px;color:#aaa;">{{ order.email }}</p>
+                <p style="margin:4px 0 0;font-size:13px;color:#aaa;">{{ order.phone_number }}</p>
+              </td>
+              <td width="50%" valign="top" align="right">
+                <p style="margin:0;font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:#666;">Shipping Address</p>
+                <p style="margin:6px 0 0;font-size:13px;color:#ccc;line-height:1.7;text-align:right;">
+                  {{ order.address_line_1 }}<br>
+                  {{ order.city }}, {{ order.state }} {{ order.postal_code }}
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Items -->
+      <tr>
+        <td style="padding:28px 36px 0;">
+          <p style="margin:0 0 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#c9a96e;font-weight:700;">Items Ordered</p>
+        </td>
+      </tr>
+      {% for item in order.items.all %}
+      <tr>
+        <td style="padding:0 36px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #333;padding:12px 0;">
+            <tr>
+              <td style="padding:12px 0;font-size:14px;color:#ddd;">{{ item.product.name }}</td>
+              <td align="right" style="padding:12px 0;font-size:13px;color:#888;white-space:nowrap;">
+                x{{ item.quantity }} &nbsp; <span style="color:#c9a96e;font-weight:600;">&#8377;{{ item.price }}</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      {% endfor %}
+
+      <!-- Order Total -->
+      <tr>
+        <td style="padding:0 36px 28px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#2e2e2e;border-top:2px solid #c9a96e;margin-top:8px;">
+            <tr>
+              <td style="padding:16px 20px;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  {% if order.discount_amount and order.discount_amount > 0 %}
+                  <tr>
+                    <td style="font-size:12px;color:#888;padding:3px 0;">Subtotal</td>
+                    <td align="right" style="font-size:12px;color:#888;">&#8377;{{ order.subtotal }}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-size:12px;color:#81c784;padding:3px 0;">Discount{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}</td>
+                    <td align="right" style="font-size:12px;color:#81c784;">– &#8377;{{ order.discount_amount }}</td>
+                  </tr>
+                  {% endif %}
+                  {% if order.shipping_amount and order.shipping_amount > 0 %}
+                  <tr>
+                    <td style="font-size:12px;color:#888;padding:3px 0;">Shipping</td>
+                    <td align="right" style="font-size:12px;color:#888;">&#8377;{{ order.shipping_amount }}</td>
+                  </tr>
+                  {% endif %}
+                  <tr>
+                    <td style="font-size:16px;font-weight:700;color:#fff;padding-top:10px;border-top:1px solid #444;">Total</td>
+                    <td align="right" style="font-size:16px;font-weight:700;color:#c9a96e;padding-top:10px;border-top:1px solid #444;">&#8377;{{ order.total_amount }}</td>
+                  </tr>
+                  {% if order.payment_method == 'cod' and order.cod_remaining_amount %}
+                  <tr>
+                    <td style="font-size:11px;color:#f0ad4e;padding-top:6px;">COD amount on delivery</td>
+                    <td align="right" style="font-size:11px;color:#f0ad4e;padding-top:6px;">&#8377;{{ order.cod_remaining_amount }}</td>
+                  </tr>
+                  {% endif %}
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Admin CTA -->
+      <tr>
+        <td style="padding:0 36px 36px;text-align:center;">
+          <a href="http://localhost:81/admin/store/order/{{ order.id }}/change/"
+             style="display:inline-block;background:#c9a96e;color:#111;padding:14px 32px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.2em;text-decoration:none;">
+            View Order in Admin
+          </a>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td style="padding:20px 36px;border-top:1px solid #333;text-align:center;">
+          <p style="margin:0;font-size:10px;color:#555;letter-spacing:0.15em;text-transform:uppercase;">SmokeKing.in Admin Notification</p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,1420 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}{% if product.meta_title %}{{ product.meta_title }}{% else %}{{ product.name }} - Premium {{ product.category.name }} - {{ SITE_NAME }}{% endif %}{% endblock %}
+
+{% block meta_description %}{% if product.meta_description %}{{ product.meta_description }}{% else %}{{ product.short_description|default:product.description|truncatewords:25 }} - Premium quality guaranteed.{% endif %}{% endblock %}
+
+{% block meta_keywords %}{% if product.meta_keywords %}{{ product.meta_keywords }}{% else %}{{ product.name }}, premium {{ product.category.name|lower }}, luxury cigar accessories, {{ SITE_NAME }}{% endif %}{% endblock %}
+
+{% block social_meta %}
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="product">
+<meta property="og:url" content="https://www.smokeking.in{{ request.get_full_path }}">
+<meta property="og:title" content="{% if product.meta_title %}{{ product.meta_title }}{% else %}{{ product.name }} - Premium {{ product.category.name }}{% endif %}">
+<meta property="og:description" content="{% if product.meta_description %}{{ product.meta_description }}{% else %}{{ product.short_description|default:product.description|truncatewords:25 }} - Premium quality guaranteed.{% endif %}">
+{% if product_image_url %}
+<meta property="og:image" content="{{ product_image_url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ product.name }}">
+{% else %}
+<meta property="og:image" content="{% static 'logo.png' %}">
+{% endif %}
+<meta property="og:site_name" content="{{ SITE_NAME }}">
+<meta property="product:price:amount" content="{{ product.price }}">
+<meta property="product:price:currency" content="INR">
+{% if product.stock > 0 %}
+<meta property="product:availability" content="in stock">
+{% else %}
+<meta property="product:availability" content="out of stock">
+{% endif %}
+<meta property="product:brand" content="{% if product.brand %}{{ product.brand }}{% else %}{{ SITE_NAME }}{% endif %}">
+<meta property="product:condition" content="new">
+{% if product.category %}
+<meta property="product:category" content="{{ product.category.name }}">
+{% endif %}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://www.smokeking.in{{ request.get_full_path }}">
+<meta name="twitter:title" content="{% if product.meta_title %}{{ product.meta_title }}{% else %}{{ product.name }} - Premium {{ product.category.name }}{% endif %}">
+<meta name="twitter:description" content="{% if product.meta_description %}{{ product.meta_description }}{% else %}{{ product.short_description|default:product.description|truncatewords:25 }}{% endif %}">
+{% if product_image_url %}
+<meta name="twitter:image" content="{{ product_image_url }}">
+<meta name="twitter:image:alt" content="{{ product.name }}">
+{% else %}
+<meta name="twitter:image" content="{% static 'logo.png' %}">
+{% endif %}
+<meta name="twitter:label1" content="Price">
+<meta name="twitter:data1" content="₹{{ product.price }}">
+<meta name="twitter:label2" content="Availability">
+<meta name="twitter:data2" content="{% if product.stock > 0 %}In Stock{% else %}Out of Stock{% endif %}">
+{% endblock %}
+
+{% block content %}
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": "https://www.smokeking.in"
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "name": "{{ product.category.name|escapejs }}",
+    "item": "https://www.smokeking.in/products/?category={{ product.category.slug }}"
+  },{
+    "@type": "ListItem",
+    "position": 3,
+    "name": "{{ product.name|escapejs }}",
+    "item": "https://www.smokeking.in{{ request.path }}"
+  }]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name|escapejs }}",
+  "image": [
+    {% if product.images.first %}"https://www.smokeking.in{{ product.images.first.image.url }}"{% elif product.image %}"https://www.smokeking.in{{ product.image.url }}"{% endif %}{% for img in product.images.all %},
+    "https://www.smokeking.in{{ img.image.url }}"{% endfor %}
+  ],
+  "description": "{{ product.short_description|default:product.description|truncatewords:50|escapejs }}",
+  "sku": "{{ product.id }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "{% if product.brand %}{{ product.brand|escapejs }}{% else %}{{ SITE_NAME }}{% endif %}"
+  },
+  "mpn": "SK{{ product.id }}",
+  "category": "{{ product.category.name|escapejs }}",
+  "offers": {
+    "@type": "Offer",
+    "url": "https://www.smokeking.in{{ request.path }}",
+    "priceCurrency": "INR",
+    "price": "{{ product.price }}",
+    "priceValidUntil": "2026-12-31T23:59:59+05:30",
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": "https://schema.org/{% if product.stock > 0 %}InStock{% else %}OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": "{{ SITE_NAME }}"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "IN",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+      "merchantReturnDays": 7,
+      "returnMethod": "https://schema.org/ReturnByMail",
+      "returnFees": "https://schema.org/FreeReturn"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "INR"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "IN"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 2,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 3,
+          "maxValue": 7,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  }{% if product.get_review_count > 0 %},
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.get_average_rating }}",
+    "reviewCount": "{{ product.get_review_count }}",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  "review": [
+    {% for review in reviews %}
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "{{ review.user.get_full_name|default:review.user.username|escapejs }}"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "{{ review.rating }}",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "name": "{% if review.title and review.title|length > 0 %}{{ review.title|escapejs }}{% else %}Customer Review{% endif %}",
+      "reviewBody": "{{ review.review|truncatewords:30|escapejs }}",
+      "datePublished": "{{ review.created_at|date:'Y-m-d' }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+}
+</script>
+
+<!-- FAQ Schema for common product questions - helps with Google rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this {{ product.name|escapejs }} original and authentic?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, all products at {{ SITE_NAME }} are 100% original and authentic. We source directly from authorized distributors and provide quality assurance on every item."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the warranty on this product?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This product comes with a 7-day replacement guarantee. If you receive a defective item, we offer free returns and replacement within 7 days of delivery."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does delivery take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We process orders within 1-2 business days. Delivery typically takes 3-7 business days depending on your location in India. Metro cities usually receive orders within 3-4 days."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Cash on Delivery (COD) available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, we offer Cash on Delivery across India. You can also pay online using UPI, credit/debit cards, or net banking for faster processing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I return or exchange this product?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, we have a hassle-free 7-day return policy. If you're not satisfied or receive a defective product, you can request a return or exchange within 7 days of delivery."
+      }
+    }
+  ]
+}
+</script>
+<div class="bg-white min-h-screen overflow-visible">
+ <div style="max-width:1480px;margin:0 auto;padding:0 20px;width:100%;">
+        
+        <nav class="w-full py-8 border-b border-gray-100 mb-10 overflow-hidden">
+    <div style="max-width:1480px;margin:0 auto;padding:0 20px;width:100%;">
+        <ol class="flex items-center flex-wrap gap-y-2 list-none p-0 m-0">
+            
+            <li class="flex items-center">
+                <a href="{% url 'home' %}" 
+                   class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.15em] md:tracking-[0.3em] text-gray-400 hover:text-[#d4af37] transition-colors duration-300">
+                    Home
+                </a>
+            </li>
+
+            <li class="px-4 md:px-6">
+                <div class="w-[1px] h-3 bg-gray-200 rotate-[25deg]"></div>
+            </li>
+
+            <li class="flex items-center">
+                <a href="/products/?category={{ product.category.slug }}" 
+                   class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.15em] md:tracking-[0.3em] text-gray-400 hover:text-[#d4af37] transition-colors duration-300">
+                    {{ product.category.name }}
+                </a>
+            </li>
+
+            <li class="px-4 md:px-6">
+                <div class="w-[1px] h-3 bg-gray-200 rotate-[25deg]"></div>
+            </li>
+
+            <li class="flex items-center">
+                <span class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.15em] md:tracking-[0.3em] text-black border-b-2 border-[#d4af37] pb-1">
+                    {{ product.get_display_title }}
+                </span>
+            </li>
+
+        </ol>
+    </div>
+</nav>
+
+
+<div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] xl:grid-cols-[1.1fr_0.9fr] gap-8 xl:gap-12 bg-white border border-gray-100 items-start w-full overflow-visible">
+      <div class="relative self-start lg:sticky lg:top-[120px] lg:border-r border-gray-100 min-w-0">
+        <div class="p-2 sm:p-4 md:p-5">
+          <div class="flex flex-col lg:flex-row-reverse lg:gap-6">
+            
+            <div class="flex-1">
+              <div class="relative aspect-square bg-white overflow-hidden group  max-w-full">
+                <img id="mainImage"
+                       src="{% if product.images.first.image %}{{ product.images.first.image.url }}{% elif product.image %}{{ product.image.url }}{% elif product.gif %}{{ product.gif.url }}{% endif %}"
+                       class="w-full h-full object-contain p-3 sm:p-4 md:p-6 transition-transform duration-1000 group-hover:scale-105{% if not product.images.first.image and not product.image and not product.gif %} hidden{% endif %}"
+                       alt="{{ product.name }}"
+                       onerror="this.classList.add('hidden'); document.getElementById('imgFallback').classList.remove('hidden'); document.getElementById('imgFallback').classList.add('flex');">
+                <div id="imgFallback" class="w-full h-full items-center justify-center bg-gray-50 text-gray-300 uppercase tracking-widest text-xs {% if product.images.first.image or product.image or product.gif %}hidden{% else %}flex{% endif %}">
+                  Image Archive Pending
+                </div>
+
+                <div class="absolute bottom-4 right-4 bg-black text-[#d4af37] px-3 py-1 text-[10px] tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    Detailed View
+                </div>
+              </div>
+            </div>
+
+            {% if product.gif or product.images.all %}
+            <div class="flex gap-2 flex-wrap justify-start mt-4 lg:mt-0 lg:flex-col lg:w-20">
+              {% if product.gif %}
+                <button onclick="document.getElementById('mainImage').src = '{{ product.gif.url }}'"
+                        class="w-16 h-16 lg:w-20 lg:h-20 border border-gray-200 hover:border-[#d4af37] transition-all overflow-hidden bg-white relative">
+                  <img src="{{ product.gif.url }}" class="w-full h-full object-contain p-1">
+                  <div class="absolute inset-0 bg-black/5"></div>
+                </button>
+              {% endif %}
+              {% for img in product.images.all %}
+                <button onclick="document.getElementById('mainImage').src = '{{ img.image.url }}'"
+                        class="w-16 h-16 lg:w-20 lg:h-20 border border-gray-100 hover:border-[#d4af37] transition-all overflow-hidden bg-white">
+                  <img src="{{ img.image.url }}" class="w-full h-full object-contain p-1">
+                </button>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="px-3 py-6 sm:p-6 lg:p-12 space-y-8 min-w-0">
+        <!--right content-->
+        <div>
+          <div class="flex items-center gap-4 mb-6">
+             <span class="text-[#d4af37] text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.3em]">
+                Authentic {{ product.category.name }}
+             </span>
+             <div class="h-[1px] flex-1 bg-gray-100"></div>
+          </div>
+          
+          <div class="space-y-4 mb-8">
+    <h1 class="text-3xl sm:text-4xl lg:text-6xl font-semibold text-gray-900 tracking-tight leading-[1.1]" style="font-family:'Cormorant Garamond',Georgia,serif;">
+        {{ product.get_display_title }}
+    </h1>
+
+    {% if product.short_description %}
+    <div class="relative pl-3 sm:pl-5 border-l-2 border-[#d4af37]/50 mt-4">
+        <p class="text-gray-600 text-sm md:text-base leading-relaxed max-w-2xl font-medium">
+            {{ product.short_description }}
+        </p>
+    </div>
+    {% endif %}
+</div>
+        </div>
+
+        <div class="flex items-center space-x-6 py-2">
+          <div class="flex items-center space-x-1">
+            {% for i in "12345" %}
+              {% if forloop.counter <= product.get_average_rating %}
+                <svg class="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              {% else %}
+                <svg class="w-4 h-4 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <span class="text-[10px] tracking-[0.2em] font-bold text-gray-400 uppercase">
+            {{ product.get_review_count|default:"10" }} Verified Reviews
+          </span>
+        </div>
+
+        <div class="py-4 space-y-8">
+          {% if product.get_discount_percentage > 0 %}
+          <div class="border-l-2 border-[#d4af37] bg-white p-6 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div class="flex items-center gap-4">
+                <div class="bg-black text-[#d4af37] px-4 py-2 text-xs font-bold tracking-[0.2em] uppercase">
+                    {{ product.get_discount_percentage }}% Exclusive Offer
+                </div>
+                <div class="text-[10px] tracking-widest text-gray-400 uppercase font-bold">Limited Availability</div>
+              </div>
+
+              {% if sale_settings and sale_settings.is_active %}
+              <div class="flex items-center gap-3">
+                <div class="text-center">
+                  <div id="detail-days" class="text-xl font-light text-black">00</div>
+                  <div class="text-[8px] tracking-widest text-gray-400 uppercase">Days</div>
+                </div>
+                <span class="text-[#d4af37] font-light mb-4">:</span>
+                <div class="text-center">
+                  <div id="detail-hours" class="text-xl font-light text-black">00</div>
+                  <div class="text-[8px] tracking-widest text-gray-400 uppercase">Hrs</div>
+                </div>
+                <span class="text-[#d4af37] font-light mb-4">:</span>
+                <div class="text-center">
+                  <div id="detail-minutes" class="text-xl font-light text-black">00</div>
+                  <div class="text-[8px] tracking-widest text-gray-400 uppercase">Min</div>
+                </div>
+                <span class="text-[#d4af37] font-light mb-4">:</span>
+                <div class="text-center">
+                  <div id="detail-seconds" class="text-xl font-light text-black">00</div>
+                  <div class="text-[8px] tracking-widest text-gray-400 uppercase">Sec</div>
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+          {% endif %}
+
+         <div class="mt-8 flex flex-wrap items-baseline gap-4">
+            <span class="text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight text-gray-900">₹{{ product.price }}</span>
+            {% if product.mrp and product.mrp > product.price %}
+            <span class="text-xl text-gray-400 line-through font-normal">₹{{ product.mrp }}</span>
+            <div class="px-2 py-1 border border-black text-[10px] font-bold tracking-widest uppercase italic">
+                Save ₹{{ product.mrp|floatformat:0|add:"-"|add:product.price|floatformat:0 }}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="flex items-center gap-4 py-4 border-b border-gray-100 mb-6">
+            <div class="flex items-center gap-2">
+              {% if product.stock > 0 %}
+                <div class="w-2 h-2 bg-green-500"></div> <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">In Stock</span>
+              {% else %}
+                <div class="w-2 h-2 bg-red-600"></div>
+                <span class="text-[11px] font-bold uppercase tracking-widest text-amber-600">Coming Soon</span>
+              {% endif %}
+            </div>
+            <span class="text-gray-300">|</span>
+            <span class="text-[11px] font-medium tracking-wide text-gray-400">Complimentary Shipping across India</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="square" stroke-linejoin="miter" d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-600">Premium Quality</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="square" stroke-linejoin="miter" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-600">Fast Delivery</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="square" stroke-linejoin="miter" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-600">Fast Delivery</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="square" stroke-linejoin="miter" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-600">Expert Support</span>
+            </div>
+          </div>
+            {% if product.description %} <div class="mt-10"> <button type="button" id="desc-toggle" class="w-full flex items-center justify-between py-5 text-left border-b border-gray-200 transition"> <h3 class="text-[13px] font-semibold uppercase tracking-wide text-gray-900"> Product Description </h3> <svg id="desc-icon" class="w-4 h-4 text-gray-800 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/> </svg> </button> <div id="desc-content" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out bg-white"> <div class="px-6 py-6 text-gray-700 leading-relaxed text-base"> {{ product.description|safe }} </div> </div> </div> {% endif %} <script> document.addEventListener("DOMContentLoaded", function(){ const toggle = document.getElementById("desc-toggle"); const content = document.getElementById("desc-content"); const icon = document.getElementById("desc-icon"); if(toggle){ toggle.addEventListener("click", function(){ if(content.style.maxHeight){ content.style.maxHeight = null; icon.style.transform = "rotate(0deg)"; }else{ content.style.maxHeight = content.scrollHeight + "px"; icon.style.transform = "rotate(180deg)"; } }); } }); </script>
+        </div>
+        
+        
+        <!-- Product Models --> 
+               {% if product.get_all_variations.count > 1 %}
+<div class="border border-gray-100 rounded-xl p-4 bg-white shadow-sm overflow-hidden">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-[12px] font-bold uppercase tracking-wide text-gray-800">
+            Choose Your Edition
+        </h3>
+        <span class="lg:hidden text-[9px] font-bold text-[#d4af37]">Swipe to View All →</span>
+    </div>
+
+    <div class="flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 overflow-x-auto lg:overflow-x-visible hide-scrollbar snap-x snap-mandatory pb-2">
+        
+        <a href="{{ product.get_absolute_url }}" 
+           class="relative flex-shrink-0 w-[115px] sm:w-[135px] lg:w-auto bg-white border-2 border-black rounded-lg p-2.5 flex flex-col items-center shadow-sm snap-start transition-transform active:scale-95">
+            
+            {% if product.images.first or product.image %}
+                <img src="{% if product.images.first %}{{ product.images.first.image.url }}{% else %}{{ product.image.url }}{% endif %}" 
+                     class="w-full aspect-square object-contain mb-2">
+            {% else %}
+                <div class="w-full aspect-square flex items-center justify-center bg-gray-50 mb-2">
+                    <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+            {% endif %}
+
+            <div class="text-center w-full">
+                <span class="block text-[11px] font-bold text-black truncate uppercase tracking-normal">
+                    {{ product.variation_name|default:"Standard" }}
+                </span>
+                <span class="block text-[13px] text-[#d4af37] font-bold mt-1">
+                    ₹{{ product.price }}
+                </span>
+            </div>
+
+            <div class="absolute top-1 right-1 bg-black rounded-full p-0.5 shadow-md">
+                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+        </a>
+
+        {% for variation in product.get_all_variations %}
+            {% if variation.id != product.id %}
+            <a href="{{ variation.get_absolute_url }}" 
+               class="group flex-shrink-0 w-[115px] sm:w-[135px] lg:w-auto bg-white border border-gray-200 rounded-lg p-2.5 flex flex-col items-center transition-all duration-300 hover:border-gray-400 active:scale-95 snap-start">
+                
+                {% if variation.images.first or variation.image %}
+                    <img src="{% if variation.images.first %}{{ variation.images.first.image.url }}{% else %}{{ variation.image.url }}{% endif %}" 
+                         class="w-full aspect-square object-contain mb-2 transition-transform group-hover:scale-105">
+                {% else %}
+                    <div class="w-full aspect-square flex items-center justify-center bg-gray-50 mb-2">
+                        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                {% endif %}
+
+                <div class="text-center w-full">
+                    <span class="block text-[11px] font-semibold text-gray-700 group-hover:text-black truncate uppercase tracking-normal">
+                        {{ variation.variation_name|default:"Standard" }}
+                    </span>
+                    <span class="block text-[13px] text-gray-900 font-bold mt-1">
+                        ₹{{ variation.price }}
+                    </span>
+                    {% if variation.stock <= 0 %}
+                        <span class="mt-1 inline-block bg-amber-100 text-amber-700 text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Soon</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<style>
+    /* Mobile par scrollbar chhupane ke liye */
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+</style>  
+        <!-- Purchase Form -->
+        <form id="add-to-cart-form" method="post" action="{% url 'add_to_cart' product.id %}?next={{ request.path }}" class="space-y-8 mt-10">
+  {% csrf_token %}
+
+  <div class="flex items-center justify-between border-b border-gray-100 pb-6">
+    <label for="qtyInput" class="text-[10px] font-bold uppercase tracking-[0.3em] text-black">Quantity</label>
+    <div class="flex items-center border border-gray-900 bg-white overflow-hidden">
+      <button type="button" onclick="changeQty(-1)"
+              class="px-5 py-2 text-xl font-light text-gray-900 hover:bg-black hover:text-white transition-all">−</button>
+      <input id="qtyInput" name="quantity" value="1" min="1" readonly
+            class="w-12 text-center py-2 focus:outline-none bg-transparent font-bold text-sm tracking-widest text-black">
+      <button type="button" onclick="changeQty(1)"
+              class="px-5 py-2 text-xl font-light text-gray-900 hover:bg-black hover:text-white transition-all">+</button>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+    {% if product.stock > 0 %}
+      
+      <button type="submit" name="action" value="buy"
+              class="w-full bg-black text-white py-5 px-4 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.3em] transition-all hover:bg-[#d4af37] hover:text-black border border-black flex items-center justify-center">
+        <span>Buy Now — ₹{{ product.price }}</span>
+      </button>
+
+      <button type="submit" name="action" value="add"
+              class="w-full bg-white border border-black text-black py-5 px-4 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.3em] transition-all hover:bg-black hover:text-white flex items-center justify-center">
+        <span>Add to Cart</span>
+      </button>
+
+    {% else %}
+      
+      <div class="col-span-2 border border-red-200 bg-red-50 p-4 text-center">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-red-600">Edition Currently Unavailable</span>
+      </div>
+
+    {% endif %}
+
+    <a href="{% url 'bulk_order' product.slug %}"
+       class="w-full bg-gray-50 border border-gray-100 text-gray-500 py-4 px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-center hover:bg-gray-100 transition-all flex items-center justify-center">
+      Bulk Order Inquiry
+    </a>
+
+    {% if product.amazon_asin or product.flipkart_fsn %}
+      <div class="flex gap-2">
+        {% if product.amazon_asin %}
+        <a href="https://amazon.in/dp/{{ product.amazon_asin }}" target="_blank"
+           class="flex-1 border border-gray-100 py-4 flex items-center justify-center hover:border-orange-400 transition-all grayscale hover:grayscale-0 bg-white">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" class="h-4 opacity-70" alt="Amazon">
+        </a>
+        {% endif %}
+        
+        {% if product.flipkart_fsn %}
+        <a href="https://www.flipkart.com/search?q={{ product.flipkart_fsn }}" target="_blank"
+           class="flex-1 border border-gray-100 py-4 flex items-center justify-center hover:border-blue-500 transition-all grayscale hover:grayscale-0 bg-white">
+          <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/fkheaderlogo_exploreplus-44005d.svg" class="h-4 opacity-70" alt="Flipkart">
+        </a>
+        {% endif %}
+      </div>
+    {% endif %}
+    </div>
+  </form>
+
+ <!-- Trust Badges -->
+<div class="border-t border-gray-200 pt-10 mt-10 w-full" style="max-width: 1500px; margin: 0 auto;">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 px-6">
+
+    <div class="group flex flex-col items-center justify-center text-center p-8 md:p-12 border border-gray-100 bg-white transition-all duration-500 hover:border-[#d4af37]/30 hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.05)]">
+      
+      <div class="flex flex-col items-center gap-5">
+        <div class="relative">
+          <svg class="w-8 h-8 text-black group-hover:text-[#d4af37] transition-all duration-500 transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.2">
+            <path stroke-linecap="square" stroke-linejoin="miter" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+
+        <span class="text-black font-black uppercase leading-tight transition-all duration-300" 
+              style="font-size: clamp(11px, 1.2vw, 13px); 
+                     letter-spacing: 0.15em; 
+                     display: inline-block; 
+                     word-break: keep-all; 
+                     overflow-wrap: normal; 
+                     white-space: normal;">
+          Secure Checkout
+        </span>
+
+        <div class="w-8 h-[1px] bg-[#d4af37] transition-all duration-700 group-hover:w-20"></div>
+      </div>
+    </div>
+
+    <div class="group flex flex-col items-center justify-center text-center p-8 md:p-12 border border-gray-100 bg-white transition-all duration-500 hover:border-[#d4af37]/30 hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.05)]">
+      
+      <div class="flex flex-col items-center gap-5">
+        <svg class="w-8 h-8 text-black group-hover:text-[#d4af37] transition-all duration-500 transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.2">
+          <path stroke-linecap="square" stroke-linejoin="miter" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+        </svg>
+
+        <span class="text-black font-black uppercase leading-tight transition-all duration-300" 
+              style="font-size: clamp(11px, 1.2vw, 13px); 
+                     letter-spacing: 0.15em; 
+                     display: inline-block; 
+                     word-break: keep-all; 
+                     overflow-wrap: normal;">
+          7-Day Returns
+        </span>
+
+        <div class="w-8 h-[1px] bg-[#d4af37] transition-all duration-700 group-hover:w-20"></div>
+      </div>
+    </div>
+
+    <div class="group flex flex-col items-center justify-center text-center p-8 md:p-12 border border-gray-100 bg-white transition-all duration-500 hover:border-[#d4af37]/30 hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.05)]">
+      
+      <div class="flex flex-col items-center gap-5">
+        <svg class="w-8 h-8 text-black group-hover:text-[#d4af37] transition-all duration-500 transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.2">
+          <path stroke-linecap="square" stroke-linejoin="miter" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+
+        <span class="text-black font-black uppercase leading-tight transition-all duration-300" 
+              style="font-size: clamp(11px, 1.2vw, 13px); 
+                     letter-spacing: 0.15em; 
+                     display: inline-block; 
+                     word-break: keep-all; 
+                     overflow-wrap: normal;">
+          Express Delivery
+        </span>
+
+        <div class="w-8 h-[1px] bg-[#d4af37] transition-all duration-700 group-hover:w-20"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!--youtube-review section {aak}-->
+{% if product.get_display_title and 'imco' in product.get_display_title|lower %}
+<section style="width: 100%; background-color: #000; padding: 0; margin: 0; overflow: hidden; line-height: 0;">
+    <div style="width: 100%; margin: 0 auto; max-width: 100%;">
+        
+        <div style="position: relative; width: 100%; height: 90vh; background-color: #000; overflow: hidden; border: none; border-radius: 0;">
+            
+            <video id="smoke-video" style="width: 100%; height: 100%; object-fit: cover; display: block;" autoplay muted loop playsinline>
+                <source src="{% static 'sk.mp4' %}" type="video/mp4">
+            </video>
+
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 5%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 55px; height: 55px; border-radius: 50%; overflow: hidden; border: 2px solid #facc15;">
+                        <img src="{% static 'logo.gif' %}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="color: #fff; font-weight: 900; font-size: clamp(14px, 4vw, 20px); text-transform: uppercase; letter-spacing: 0.1em; line-height: 1;">SmokeKing</span>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                            <span style="width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; display: inline-block; animation: smokePulse 1.5s infinite;"></span>
+                            <span style="color: rgba(255,255,255,0.7); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em;">Exclusive Ritual</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="https://www.youtube.com/@SmokeKing_India?sub_confirmation=1" target="_blank" 
+                   style="background-color: #fff; color: #000; font-size: 11px; font-weight: 900; padding: 14px 28px; border-radius: 2px; text-transform: uppercase; text-decoration: none; border: none; letter-spacing: 0.1em; transition: all 0.3s ease;">
+                    Subscribe
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    @keyframes smokePulse {
+        0% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(1.2); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    /* Mobile optimization for text sizing */
+    @media (max-width: 768px) {
+        div[style*="90vh"] { height: 70vh !important; } /* Reducing slightly on mobile for better UX */
+    }
+</style>
+{% endif %}
+</div>
+    </div>
+
+
+
+    <!-- Reviews Section -->
+    <div style="max-width:1480px;margin:0 auto;padding:40px 20px;width:100%;overflow:hidden;">
+  {% include 'store/partials/product_reviews.html' %}
+</div>
+
+    <!-- Related Products Section - Homepage Style with Slider -->
+{% if related_products %} <section class="w-full bg-white py-16 md:py-24 border-t border-gray-100 overflow-hidden"><div style="max-width:1480px;margin:0 auto;padding:0 20px;width:100%;"> <div class="w-full mb-14"> <div class="flex items-end justify-between gap-6 border-b border-gray-100 pb-8 pr-6 md:pr-12"> <div class="border-l-[6px] border-[#d4af37] pl-6 md:pl-12"> <span class="text-[#d4af37] text-[10px] md:text-xs uppercase tracking-[0.6em] font-medium mb-3 block"> Recommended Archive </span> <h2 class="text-3xl md:text-6xl text-gray-900 uppercase tracking-tight leading-none"> YOU MIGHT <span class="text-[#d4af37]">ALSO LIKE</span> </h2> </div> <div class="hidden md:flex gap-2 mb-1"> <button id="related-prev" class="w-12 h-12 border border-gray-200 flex items-center justify-center hover:border-black hover:bg-black hover:text-[#d4af37] transition-all duration-300"> <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-width="2" d="M15 19l-7-7 7-7"/> </svg> </button> <button id="related-next" class="w-12 h-12 border border-gray-200 flex items-center justify-center hover:border-black hover:bg-black hover:text-[#d4af37] transition-all duration-300"> <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-width="2" d="M9 5l7 7-7 7"/> </svg> </button> </div> </div> </div> <div id="relatedSliderContainer" class="flex overflow-x-auto gap-6 snap-x snap-mandatory hide-scrollbar pl-4 sm:pl-6 md:pl-10 lg:pl-16 xl:pl-20 pr-6 md:pr-16"> {% for related_product in related_products %} <div class="flex-shrink-0 w-[260px] md:w-[320px] bg-white border border-gray-100 rounded-xl snap-start shadow-[0_10px_40px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_80px_rgba(0,0,0,0.08)] hover:border-[#d4af37]/30 group"> <!-- Product Image --> <div class="relative aspect-square overflow-hidden p-8 border-b border-gray-50"> <a href="{{ related_product.get_absolute_url }}" class="block h-full"> {% if related_product.images.first or related_product.image %} <img src="{% if related_product.images.first %}{{ related_product.images.first.image.url }}{% else %}{{ related_product.image.url }}{% endif %}" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" loading="lazy"> {% if related_product.gif %} <img src="{{ related_product.gif.url }}" class="absolute inset-0 w-full h-full object-contain p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-white"> {% endif %} {% endif %} </a> </div> <!-- Product Info --> <div class="p-6 space-y-4"> <a href="{{ related_product.get_absolute_url }}" class="block"> <h3 class="text-[13px] text-gray-900 uppercase tracking-[0.15em] transition-colors duration-300 group-hover:text-[#d4af37] line-clamp-2"> {{ related_product.get_display_title }} </h3> </a> <div class="flex items-center justify-between pt-1"> <span class="text-xl text-black tracking-tight"> ₹{{ related_product.price }} </span> <span class="text-[9px] uppercase tracking-[0.3em] text-[#d4af37]"> Master Edition </span> </div> <form method="post" action="{% url 'add_to_cart' related_product.id %}?next={{ request.path }}" class="pt-3"> {% csrf_token %} <input type="hidden" name="quantity" value="1"> <button type="submit" name="action" value="add" class="w-full border border-black py-4 text-[10px] uppercase tracking-[0.35em] transition-all duration-300 hover:bg-black hover:text-white"> Add to Cart </button> </form> </div> </div> {% endfor %} </div></div> </section>
+
+<style>
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Peeking effect fix for mobile */
+    @media (max-width: 768px) {
+        #relatedSliderContainer {
+            padding-right: 40px !important;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('relatedSliderContainer');
+    const nextBtn = document.getElementById('related-next');
+    const prevBtn = document.getElementById('related-prev');
+    let autoScrollInterval;
+
+    if (slider) {
+        // 1. Auto Slide Function (4 Seconds)
+        const startAutoScroll = () => {
+            autoScrollInterval = setInterval(() => {
+                const cardWidth = slider.querySelector('div').offsetWidth + 16;
+                if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                }
+            }, 4000);
+        };
+
+        const stopAutoScroll = () => clearInterval(autoScrollInterval);
+
+        // 2. Event Listeners
+        startAutoScroll();
+        slider.addEventListener('mouseenter', stopAutoScroll);
+        slider.addEventListener('mouseleave', startAutoScroll);
+        slider.addEventListener('touchstart', stopAutoScroll);
+
+        // 3. Desktop Navigation
+        nextBtn?.addEventListener('click', () => {
+            const cardWidth = slider.querySelector('div').offsetWidth + 16;
+            slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        });
+
+        prevBtn?.addEventListener('click', () => {
+            const cardWidth = slider.querySelector('div').offsetWidth + 16;
+            slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        });
+    }
+});
+</script>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Image safety check
+  const mainImg = document.getElementById('mainImage');
+  const imgFallback = document.getElementById('imgFallback');
+  if (mainImg && imgFallback) {
+    const src = mainImg.getAttribute('src');
+    if (!src || src === '' || src === window.location.href) {
+      mainImg.classList.add('hidden');
+      imgFallback.classList.remove('hidden');
+      imgFallback.classList.add('flex');
+    } else {
+      mainImg.addEventListener('load', function() {
+        if (mainImg.naturalWidth === 0) {
+          mainImg.classList.add('hidden');
+          imgFallback.classList.remove('hidden');
+          imgFallback.classList.add('flex');
+        }
+      });
+    }
+  }
+
+  // Quantity change function
+  window.changeQty = function(delta) {
+    const input = document.getElementById('qtyInput');
+    let current = parseInt(input.value) || 1;
+    current = current + delta;
+    if (current < 1) current = 1;
+    if (current > 99) current = 99; // Maximum quantity
+    input.value = current;
+  };
+
+  // Image gallery keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const thumbnails = document.querySelectorAll('button[onclick*="mainImage"]');
+      if (thumbnails.length > 1) {
+        const currentSrc = document.getElementById('mainImage').src;
+        let currentIndex = 0;
+        
+        // Find current image index
+        thumbnails.forEach((thumb, index) => {
+          if (thumb.querySelector('img').src === currentSrc) {
+            currentIndex = index;
+          }
+        });
+        
+        // Navigate to next/previous image
+        if (e.key === 'ArrowLeft') {
+          currentIndex = currentIndex > 0 ? currentIndex - 1 : thumbnails.length - 1;
+        } else {
+          currentIndex = currentIndex < thumbnails.length - 1 ? currentIndex + 1 : 0;
+        }
+        
+        thumbnails[currentIndex].click();
+      }
+    }
+  });
+
+  // Add to cart with animation feedback
+  const cartForm = document.getElementById('add-to-cart-form');
+  if (cartForm) {
+    cartForm.addEventListener('submit', function(e) {
+      const submitButton = e.submitter;
+      if (submitButton && submitButton.name === 'action' && submitButton.value === 'add') {
+        submitButton.innerHTML = '<svg class="animate-spin w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Adding...';
+        submitButton.disabled = true;
+      }
+    });
+  }
+
+  // Related Products Slider Navigation (Desktop Only)
+  const relatedSlider = document.getElementById('relatedProductsSlider');
+  const scrollLeftRelated = document.getElementById('scrollLeftRelated');
+  const scrollRightRelated = document.getElementById('scrollRightRelated');
+
+  if (relatedSlider && scrollLeftRelated && scrollRightRelated) {
+    function setupSlider() {
+      if (window.innerWidth >= 1280) {
+        // Desktop: Convert to horizontal slider
+        relatedSlider.classList.remove('grid', 'grid-cols-2', 'sm:grid-cols-2', 'lg:grid-cols-4');
+        relatedSlider.classList.add('flex', 'overflow-x-auto');
+        relatedSlider.style.scrollSnapType = 'x mandatory';
+
+        const cards = relatedSlider.querySelectorAll('.group');
+        cards.forEach(card => {
+          card.style.minWidth = '280px';
+          card.style.maxWidth = '280px';
+          card.style.scrollSnapAlign = 'start';
+        });
+
+        scrollLeftRelated.addEventListener('click', () => {
+          relatedSlider.scrollBy({ left: -600, behavior: 'smooth' });
+        });
+
+        scrollRightRelated.addEventListener('click', () => {
+          relatedSlider.scrollBy({ left: 600, behavior: 'smooth' });
+        });
+
+        function updateScrollButtons() {
+          scrollLeftRelated.style.opacity = relatedSlider.scrollLeft <= 0 ? '0.3' : '1';
+          scrollLeftRelated.style.pointerEvents = relatedSlider.scrollLeft <= 0 ? 'none' : 'auto';
+          const isAtEnd = relatedSlider.scrollLeft + relatedSlider.clientWidth >= relatedSlider.scrollWidth - 10;
+          scrollRightRelated.style.opacity = isAtEnd ? '0.3' : '1';
+          scrollRightRelated.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+        }
+
+        relatedSlider.addEventListener('scroll', updateScrollButtons);
+        updateScrollButtons();
+      } else {
+        // Mobile: Keep grid layout
+        relatedSlider.classList.add('grid', 'grid-cols-2', 'sm:grid-cols-2', 'lg:grid-cols-4');
+        relatedSlider.classList.remove('flex', 'overflow-x-auto');
+
+        const cards = relatedSlider.querySelectorAll('.group');
+        cards.forEach(card => {
+          card.style.minWidth = '';
+          card.style.maxWidth = '';
+          card.style.scrollSnapAlign = '';
+        });
+      }
+    }
+
+    setupSlider();
+  }
+
+  // Countdown Timer with auto-renewal support
+  let detailSaleEndDate = {% if sale_settings and sale_settings.is_active %}new Date('{{ sale_settings.sale_end_date|date:"c" }}').getTime(){% else %}null{% endif %};
+
+  function updateDetailCountdown() {
+    if (!detailSaleEndDate) {
+      document.getElementById('detail-days').textContent = '00';
+      document.getElementById('detail-hours').textContent = '00';
+      document.getElementById('detail-minutes').textContent = '00';
+      document.getElementById('detail-seconds').textContent = '00';
+      return;
+    }
+
+    const now = new Date().getTime();
+    const distance = detailSaleEndDate - now;
+
+    if (distance < 0) {
+      document.getElementById('detail-days').textContent = '00';
+      document.getElementById('detail-hours').textContent = '00';
+      document.getElementById('detail-minutes').textContent = '00';
+      document.getElementById('detail-seconds').textContent = '00';
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById('detail-days').textContent = String(days).padStart(2, '0');
+    document.getElementById('detail-hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('detail-minutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('detail-seconds').textContent = String(seconds).padStart(2, '0');
+  }
+
+  // Check for timer renewal from server
+  function checkDetailSaleTimer() {
+    fetch('/api/sale-timer/')
+      .then(response => response.json())
+      .then(data => {
+        if (data.active && data.sale_end_date) {
+          detailSaleEndDate = new Date(data.sale_end_date).getTime();
+        }
+      })
+      .catch(err => console.log('Sale timer check failed'));
+  }
+
+  // Update countdown every second
+  updateDetailCountdown();
+  setInterval(updateDetailCountdown, 1000);
+
+  // Check server for renewal every 30 seconds
+  setInterval(checkDetailSaleTimer, 30000);
+});
+</script>
+
+<!--youtube-review section {aak}-->
+<script>
+    /**
+     * SmokeKing Ritual - Final Integrated Script
+     * Logic: IST Time Update + Premium Video Interaction
+     */
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1. REAL-TIME INDIA CLOCK (IST)
+        function updateIST() {
+            const options = { 
+                timeZone: 'Asia/Kolkata', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false 
+            };
+            const now = new Date();
+            const ist = new Intl.DateTimeFormat('en-GB', options).format(now);
+            const timeElement = document.getElementById('ist-time');
+            if (timeElement) timeElement.textContent = ist;
+        }
+
+        // Initial call and set interval for every second
+        updateIST();
+        setInterval(updateIST, 1000);
+
+        // 2. PREMIUM VIDEO INTERACTION LOGIC
+        const video = document.getElementById('smoke-video');
+        const playUI = document.getElementById('play-ui');
+
+        if (video && playUI) {
+            // Click/Touch event on video container
+            video.parentElement.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                    // Smoothly hide play icon
+                    playUI.classList.add('opacity-0');
+                } else {
+                    video.pause();
+                    // Smoothly show play icon
+                    playUI.classList.remove('opacity-0');
+                }
+            });
+
+            // Fallback: Ensure icon hides if browser autoplays the video
+            video.addEventListener('play', () => {
+                playUI.classList.add('opacity-0');
+            });
+            
+            // Show icon if video ends (and not looping) or gets stuck
+            video.addEventListener('pause', () => {
+                playUI.classList.remove('opacity-0');
+            });
+        }
+    });
+</script>
+<!-- Additional Styles for Better UX -->
+<style>
+.prose {
+  line-height: 1.7;
+}
+.prose p {
+  margin-bottom: 1rem;
+}
+.prose h1, .prose h2, .prose h3 {
+  color: #374151;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+.prose ul, .prose ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+.prose li {
+  margin: 0.5rem 0;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Hide scrollbar for related products slider */
+.hide-scrollbar-related::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar-related {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+/* Ensure min-height for product titles to align cards */
+.min-h-\\[3em\\] {
+  min-height: 3em;
+}
+/* Variations Section - 3 Column Grid on Mobile */
+.variations-scroll-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.variations-scroll-wrapper > a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 2px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: white;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.variations-scroll-wrapper > a.variation-card-active {
+  border-color: #fbbf24;
+  background: #fffbeb;
+}
+
+.variations-scroll-wrapper > a:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  border-color: #fbbf24;
+}
+
+.variation-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 0.25rem;
+  background: white;
+}
+
+.variation-image-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border-radius: 0.25rem;
+  border: 1px solid #e5e7eb;
+}
+
+.variation-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  gap: 0.125rem;
+}
+
+.variation-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  width: 100%;
+}
+
+.variation-price {
+  font-size: 10px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.variation-card-active .variation-price {
+  color: #d97706;
+}
+
+.variation-stock-out {
+  font-size: 9px;
+  color: #dc2626;
+}
+
+.variation-checkmark {
+  width: 18px;
+  height: 18px;
+  color: white;
+  background: #fbbf24;
+  border-radius: 9999px;
+  padding: 2px;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+/* Tablet and above */
+@media (min-width: 640px) {
+  .variations-scroll-wrapper {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.625rem;
+  }
+
+  .variations-scroll-wrapper > a {
+    padding: 0.625rem;
+    gap: 0.5rem;
+  }
+
+  .variation-name {
+    font-size: 11px;
+  }
+
+  .variation-price {
+    font-size: 11px;
+  }
+
+  .variation-stock-out {
+    font-size: 10px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .variations-scroll-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .variations-scroll-wrapper > a {
+    width: auto;
+    min-width: 110px;
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .variation-image {
+    width: 90px;
+    height: 90px;
+  }
+
+  .variation-image-placeholder {
+    width: 90px;
+    height: 90px;
+  }
+
+  .variation-name {
+    font-size: 12px;
+  }
+
+  .variation-price,
+  .variation-stock-out {
+    font-size: 12px;
+  }
+
+  .variation-checkmark {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Mobile Action Buttons Fix */
+@media (max-width: 480px) {
+  /* Ensure form container doesn't overflow */
+  #add-to-cart-form {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* Reduce button padding on small screens */
+  #add-to-cart-form button[type="submit"],
+  #add-to-cart-form button[type="button"] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Fix Buy Now button text overflow */
+  #add-to-cart-form button[value="buy"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Bulk order link fix */
+  #add-to-cart-form a[href*="bulk"] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 0.75rem;
+  }
+
+  /* External store links fix */
+  #add-to-cart-form .flex.gap-3 {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  #add-to-cart-form .flex.gap-3 a {
+    padding: 0.625rem 1rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Ultra small screens */
+@media (max-width: 360px) {
+  #add-to-cart-form button[type="submit"],
+  #add-to-cart-form button[type="button"] {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.8rem;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+}
+
+/* GLOBAL MOBILE OVERFLOW FIX */
+@media (max-width:640px){
+
+  body{
+    overflow-x:hidden;
+  }
+
+  .max-w-\[1600px\]{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .grid{
+    min-width:0;
+  }
+
+  .flex{
+    min-width:0;
+  }
+
+  img{
+    max-width:100%;
+    height:auto;
+  }
+
+  button,a{
+    word-break:break-word;
+  }
+
+  .aspect-square{
+    max-width:100%;
+  }
+
+}
+
+@media (max-width:640px){
+
+  img{
+    max-width:100%;
+    height:auto;
+  }
+
+  h1{
+    font-size:28px;
+    line-height:1.2;
+  }
+
+  h2{
+    font-size:22px;
+  }
+
+  .aspect-\[9\/19\]{
+    max-height:520px;
+  }
+
+}
+
+/* Premium Boxed Layout */
+.site-container{
+max-width:2100px;
+margin:auto;
+width:100%;
+}
+
+/* Prevent overflow */
+*{
+min-width:0;
+}
+
+/* Image safety */
+img{
+max-width:100%;
+height:auto;
+}
+
+/* Grid safety */
+.grid{
+min-width:0;
+}
+
+.flex{
+min-width:0;
+}
+/* ================= MOBILE OVERFLOW FIX (FINAL PATCH) ================= */
+
+{% comment %} html, body {
+  overflow-x: hidden;
+} {% endcomment %}
+
+/* Fix all containers */
+.w-full,
+.max-w-full {
+  max-width: 100vw;
+}
+
+/* VERY IMPORTANT: prevent flex/grid overflow */
+.flex > *,
+.grid > * {
+  min-width: 0;
+}
+
+/* Fix long text breaking */
+h1, h2, h3, p, span, a {
+  word-break: break-word;
+}
+
+/* Fix excessive tracking on mobile */
+@media (max-width: 640px) {
+  [class*="tracking-"] {
+    letter-spacing: 0.08em !important;
+  }
+}
+
+/* Fix padding causing side overflow */
+@media (max-width: 640px) {
+  .px-16, .px-12, .px-10 {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
+/* Fix sliders / horizontal sections */
+@media (max-width: 640px) {
+  .overflow-x-auto {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
+/* Image safety */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fix any accidental wide elements */
+* {
+  box-sizing: border-box;
+}
+
+@media (min-width:1024px){
+  html, body {
+    overflow: visible !important;
+  }
+}
+</style>
+{% endblock %}

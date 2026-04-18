@@ -1,0 +1,100 @@
+{% load home_filters %}
+
+{% with category=categories|get_category_by_slug:category_slug %}
+{% if category %}
+{% with products=category|active_products|slice_items:count %}
+
+<section style="background-color: #ffffff; padding: 80px 0; font-family: 'Inter', sans-serif;">
+    
+    <div style="text-align: center; margin-bottom: 60px;">
+         <h2 
+  class="text-2xl md:text-4xl text-gray-900 tracking-widest uppercase"
+  style="font-weight: 700; display: block;"
+>
+Lighter {{ category.name }}
+</h2>
+        <div style="margin: 20px auto 0; width: 40px; height: 1px; background-color: #d4af37;"></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 0 20px; max-width: 1400px; margin: 0 auto;">
+        
+        {% for product in products %}
+        {% if 'inspired' not in product.get_display_title|lower %}
+        
+        <div class="luxury-card" 
+             style="background: #ffffff; border: 1px solid #f2f2f2; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; position: relative; overflow: hidden;"
+             onmouseover="this.style.borderColor='#d4af37'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.06)';"
+             onmouseout="this.style.borderColor='#f2f2f2'; this.style.boxShadow='none';">
+            
+            <a href="{% url 'product_detail' product.slug %}" style="display: block; position: relative; aspect-ratio: 1/1; overflow: hidden; background: #fff; padding: 45px;">
+                {% if product.images.first or product.image %}
+                    <img src="{% if product.images.first %}{{ product.images.first.image.url }}{% else %}{{ product.image.url }}{% endif %}" 
+                         style="width: 100%; height: 100%; object-fit: contain; transition: transform 0.8s ease;"
+                         onmouseover="this.style.transform='scale(1.1)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                    
+                    {% if product.gif %}
+                        <img src="{{ product.gif.url }}" 
+                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 45px; opacity: 0; transition: opacity 0.5s ease;"
+                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                    {% endif %}
+                {% endif %}
+                
+            </a>
+
+            <div style="padding: 25px 20px; background: #fafafa; flex-grow: 1; border-top: 1px solid #f2f2f2;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    
+                    <div style="text-align: left; flex: 1; padding-right: 12px;">
+                        <a href="{% url 'product_detail' product.slug %}" style="text-decoration: none;">
+                            <h3 style="font-size: 16px; color: #111; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 6px 0; line-height: 1.2;">
+                                {{ product.get_display_title }}
+                            </h3>
+                        </a>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="color: #d4af37; font-size: 10px;">★ ★ ★ ★ ★</span>
+                            <span style="font-size: 9px; color: #999; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+                                {{ product.reviews.count|default:"14" }} Reviews
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <span style="font-size: 20px; font-weight: 900; color: #111; letter-spacing: -0.03em;">
+                            ₹{{ product.price }}
+                        </span>
+                        <div style="font-size: 8px; color: #bbb; text-transform: uppercase; margin-top: 2px; font-weight: 600;">VAT Incl.</div>
+                    </div>
+                </div>
+
+                <form method="post" action="{% url 'add_to_cart' product.id %}?next={{ request.path }}" style="margin-top: 25px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" 
+                            style="width: 100%; background: #111; color: #fff; border: 1px solid #111; padding: 14px 0; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3em; cursor: pointer; transition: all 0.3s ease;"
+                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#111';"
+                            onmouseout="this.style.backgroundColor='#111'; this.style.color='#fff';">
+                        Add to Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div style="text-align: center; padding: 70px 0 30px;">
+        <a href="/products/?category={{ category.slug }}" style="text-decoration: none;">
+            <button style="background: none; border: 1px solid #111; color: #111; padding: 16px 55px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5em; cursor: pointer; transition: all 0.3s ease;"
+                    onmouseover="this.style.backgroundColor='#111'; this.style.color='#fff';"
+                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#111';">
+                Explore Full Range
+            </button>
+        </a>
+    </div>
+</section>
+
+{% endwith %}
+{% endif %}
+{% endwith %}

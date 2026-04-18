@@ -1,0 +1,93 @@
+<script>
+function toggleCompare(event, slug, productId, productName) {
+  event.preventDefault();
+  const btn = event.currentTarget;
+  btn.disabled = true;
+
+  fetch(`/encyclopedia/compare/add/${slug}/`, {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': getCookie('csrftoken'),
+    }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (!data.success) {
+      alert(data.message);
+      btn.disabled = false;
+      return;
+    }
+
+    const compareIds = data.compare_ids;
+    const compareCount = data.compare_count;
+    const added = data.added;
+
+    // Update compare bar
+    const bar = document.getElementById('compare-bar');
+    const barCount = document.getElementById('compare-bar-count');
+    if (bar) {
+      if (compareCount === 0) {
+        bar.classList.add('hidden');
+      } else {
+        bar.classList.remove('hidden');
+      }
+    }
+    if (barCount) barCount.textContent = compareCount;
+
+    // Update all buttons for this product across the page
+    document.querySelectorAll(`[data-slug="${slug}"]`).forEach(b => {
+      if (added) {
+        b.classList.remove('border-gray-600', 'text-gray-400', 'hover:border-amber-500', 'hover:text-amber-400');
+        b.classList.add('bg-amber-500/20', 'border-amber-500', 'text-amber-400');
+        b.innerHTML = `<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>`;
+        b.title = 'Remove from compare';
+      } else {
+        b.classList.add('border-gray-600', 'text-gray-400', 'hover:border-amber-500', 'hover:text-amber-400');
+        b.classList.remove('bg-amber-500/20', 'border-amber-500', 'text-amber-400');
+        b.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>`;
+        b.title = 'Add to compare';
+      }
+      b.disabled = false;
+    });
+
+    // Update main detail page toggle button if present
+    const mainBtn = document.getElementById('compare-toggle-btn');
+    if (mainBtn) {
+      if (added) {
+        mainBtn.textContent = '✓ In Compare List – Click to Remove';
+        mainBtn.classList.remove('border-gray-600', 'text-gray-300');
+        mainBtn.classList.add('bg-amber-500/20', 'border-amber-500', 'text-amber-400');
+      } else {
+        mainBtn.textContent = '+ Add to Compare (max 3)';
+        mainBtn.classList.add('border-gray-600', 'text-gray-300');
+        mainBtn.classList.remove('bg-amber-500/20', 'border-amber-500', 'text-amber-400');
+      }
+    }
+
+    // Refresh page if on compare page (product was removed)
+    if (window.location.pathname.includes('/encyclopedia/compare/') && !added) {
+      location.reload();
+    }
+  })
+  .catch(() => {
+    btn.disabled = false;
+    alert('Error updating compare list. Please try again.');
+  });
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>

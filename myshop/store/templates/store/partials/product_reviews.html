@@ -1,0 +1,206 @@
+{% load custom_filters %}
+
+<div class="border-t border-gray-100 pt-12">
+    
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-10 border-b border-gray-100 pb-8">
+        <div class="border-l-4 border-[#d4af37] pl-6 md:pl-10">
+            <span class="text-[#d4af37] text-[10px] md:text-xs uppercase tracking-[0.5em] font-black mb-3 block">
+                Customer Protocol
+            </span>
+            <h2 class="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter leading-none">
+                THE <span class="text-[#d4af37]">REVIEWS</span>
+            </h2>
+        </div>
+
+        {% if user.is_authenticated and not user_review %}
+            <a href="{% url 'add_review' product.slug %}" 
+               class="bg-black text-white px-10 py-5 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#d4af37] hover:text-black transition-all border border-black">
+                Submit Entry
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="bg-white border border-gray-100 p-8 md:p-12 mb-12 relative overflow-hidden group">
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none [background-image:radial-gradient(#000_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center md:space-x-16 space-y-8 md:space-y-0">
+            <div class="text-center md:border-r md:border-gray-100 md:pr-16">
+                <div class="text-7xl md:text-8xl font-black text-black tracking-tighter leading-none mb-4">{{ product.get_average_rating }}</div>
+                <div class="flex items-center justify-center gap-1">
+                    {% for i in "12345" %}
+                        <svg class="w-5 h-5 {% if forloop.counter <= product.get_average_rating %}text-[#d4af37]{% else %}text-gray-100{% endif %} fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                        </svg>
+                    {% endfor %}
+                </div>
+                <div class="text-[10px] font-black text-gray-400 mt-6 uppercase tracking-[0.3em]">
+                    Based on {{ product.get_review_count }} Verified Entries
+                </div>
+            </div>
+
+            {% if product.get_review_count > 0 %}
+            <div class="flex-1 w-full space-y-4">
+                {% for rating, count in product.get_rating_distribution.items %}
+                <div class="flex items-center space-x-4 group/bar">
+                    <span class="text-[11px] font-black w-8 text-black">{{ rating }}★</span>
+                    <div class="flex-1 bg-gray-50 border border-gray-100 h-2">
+                        <div class="bg-[#d4af37] h-full transition-all duration-1000 group-hover/bar:bg-black" style="width: {{ count|multiply:100|divide:product.get_review_count }}%"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-400 w-8">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if user_review %}
+    <div class="border-2 border-black p-8 mb-12 bg-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-black text-[#d4af37] px-6 py-1.5 text-[9px] font-black uppercase tracking-widest">Your Private Entry</div>
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex gap-1">
+                {% for i in "12345" %}
+                    <svg class="w-4 h-4 {% if forloop.counter <= user_review.rating %}text-[#d4af37]{% else %}text-gray-100{% endif %} fill-current" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                    </svg>
+                {% endfor %}
+            </div>
+            <a href="{% url 'edit_review' product.slug user_review.id %}" class="text-[10px] font-black uppercase tracking-widest text-black border-b border-black pb-0.5">Edit Entry</a>
+        </div>
+        <h4 class="font-black text-black uppercase text-base tracking-tight mb-3">{{ user_review.title|escape }}</h4>
+        <p class="text-gray-600 text-sm leading-loose max-w-3xl">{{ user_review.review|escape|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    {% if reviews %}
+    <div class="relative">
+        <button id="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-black text-[#d4af37] p-5 border border-[#d4af37]/30 hover:bg-[#d4af37] hover:text-black transition-all -ml-6 hidden lg:flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+
+        <button id="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-black text-[#d4af37] p-5 border border-[#d4af37]/30 hover:bg-[#d4af37] hover:text-black transition-all -mr-6 hidden lg:flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <div id="reviewsSlider" class="flex overflow-x-auto gap-8 pb-12 scroll-smooth hide-scrollbar" style="scroll-snap-type: x mandatory;">
+            {% for review in reviews %}
+                <div class="flex-shrink-0 w-full sm:w-80 md:w-[450px] bg-white border border-gray-100 p-8 md:p-10 hover:border-black transition-all group/card" style="scroll-snap-align: start;">
+                    <div class="flex items-start justify-between mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-black flex items-center justify-center shrink-0 border border-zinc-800">
+                                <span class="text-[#d4af37] font-black text-xl italic">{{ review.user.first_name.0|default:review.user.username.0|upper }}</span>
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <span class="text-[11px] font-black uppercase tracking-widest text-black truncate">{{ review.user.first_name|default:review.user.username }}</span>
+                                <div class="flex items-center gap-2 mt-1">
+                                    {% if review.is_verified_purchase %}
+                                        <span class="text-[8px] font-black text-green-600 uppercase tracking-widest">Verified Archive</span>
+                                    {% endif %}
+                                    <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">{{ review.created_at|date:"d M Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-0.5">
+                            {% for i in "12345" %}
+                                <svg class="w-3 h-3 {% if forloop.counter <= review.rating %}text-[#d4af37]{% else %}text-gray-100{% endif %} fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="min-h-[140px]">
+                        {% if review.title %}
+                            <h5 class="text-sm font-black text-black uppercase tracking-tight mb-3 italic">{{ review.title|escape }}</h5>
+                        {% endif %}
+                        <p class="text-gray-600 text-sm leading-[1.8] line-clamp-4 group-hover/card:text-black transition-colors">{{ review.review|escape }}</p>
+                    </div>
+
+                    {% if review.media.all %}
+                    <div class="mt-8 flex gap-3">
+                        {% for media in review.media.all %}
+                            <div class="w-16 h-16 border border-gray-100 p-1 cursor-pointer overflow-hidden review-media-item hover:border-black transition-all" data-type="{{ media.media_type }}" data-src="{{ media.file.url }}">
+                                {% if media.media_type == 'video' %}
+                                    <div class="w-full h-full bg-black flex items-center justify-center">
+                                        <div class="w-0 h-0 border-t-4 border-t-transparent border-l-6 border-l-[#d4af37] border-b-4 border-b-transparent"></div>
+                                    </div>
+                                {% else %}
+                                    <img src="{{ media.file.url }}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all">
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-50 flex items-center justify-between">
+                        <span class="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Protocol Approved</span>
+                        <div class="text-[9px] font-black text-black uppercase tracking-widest">👍 {{ review.helpful_count }} Helpful</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-[#d4af37]/40 to-transparent"></div>
+    </div>
+    {% else %}
+        <div class="text-center py-20 bg-gray-50 border border-gray-100">
+            <p class="text-gray-400 text-[10px] font-black uppercase tracking-[0.4em] mb-8">Archive Empty</p>
+            <a href="{% url 'add_review' product.slug %}" class="bg-black text-white px-12 py-5 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#d4af37] hover:text-black transition-all">Be the First Entry</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('reviewsSlider');
+    const scrollLeftBtn = document.getElementById('scrollLeft');
+    const scrollRightBtn = document.getElementById('scrollRight');
+
+    if (slider) {
+        // 1. AUTO-SCROLL FUNCTION (Every 5 Seconds)
+        let autoScroll = setInterval(() => {
+            if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
+                slider.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                slider.scrollBy({ left: 450, behavior: 'smooth' });
+            }
+        }, 5000);
+
+        // Pause on Hover
+        slider.addEventListener('mouseenter', () => clearInterval(autoScroll));
+        
+        // 2. MANUAL NAVIGATION
+        scrollLeftBtn?.addEventListener('click', () => slider.scrollBy({ left: -450, behavior: 'smooth' }));
+        scrollRightBtn?.addEventListener('click', () => slider.scrollBy({ left: 450, behavior: 'smooth' }));
+
+        // 3. MEDIA LIGHTBOX (SmokeKing Style)
+        const mediaItems = document.querySelectorAll('.review-media-item');
+        mediaItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const type = this.dataset.type;
+                const src = this.dataset.src;
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 md:p-10';
+                
+                let content = type === 'video' 
+                    ? `<video src="${src}" class="max-w-full max-h-[85vh] border-2 border-[#d4af37]" controls autoplay></video>`
+                    : `<img src="${src}" class="max-w-full max-h-[85vh] border-2 border-[#d4af37] object-contain">`;
+
+                modal.innerHTML = `
+                    <div class="relative bg-black p-2 border border-[#d4af37]/20 shadow-2xl">
+                        ${content}
+                        <button class="absolute -top-10 right-0 text-[#d4af37] text-xs font-black uppercase tracking-widest" onclick="this.closest('#media-modal').remove()">[ Close ]</button>
+                    </div>
+                `;
+                modal.id = 'media-modal';
+                document.body.appendChild(modal);
+                modal.addEventListener('click', (e) => { if(e.target === modal) modal.remove(); });
+            });
+        });
+    }
+});
+</script>
+
+<style>
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.line-clamp-4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+</style>

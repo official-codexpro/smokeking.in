@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Order Has Been Shipped – SmokeKing.in</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:40px 0;">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;">
+
+      <!-- Header -->
+      <tr>
+        <td style="background:#111111;padding:36px 40px;text-align:center;">
+          <p style="margin:0;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#c9a96e;font-weight:700;">SmokeKing.in</p>
+          <h1 style="margin:12px 0 0;font-size:22px;font-weight:300;color:#ffffff;letter-spacing:0.15em;text-transform:uppercase;">Shipped &amp; Trackable</h1>
+          <div style="width:40px;height:1px;background:#c9a96e;margin:16px auto 0;"></div>
+        </td>
+      </tr>
+
+      <!-- Message -->
+      <tr>
+        <td style="padding:40px 40px 28px;text-align:center;border-bottom:1px solid #f0f0f0;">
+          <div style="width:64px;height:64px;background:#111;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:28px;line-height:64px;display:block;">&#128666;</span>
+          </div>
+          <p style="margin:0 0 8px;font-size:13px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">Hello, {{ customer_name }}</p>
+          <h2 style="margin:0 0 14px;font-size:20px;font-weight:600;color:#111;">Your order is on its way!</h2>
+          <p style="margin:0 auto;font-size:14px;color:#555;line-height:1.7;max-width:400px;">
+            Your {{ site_name }} order has been dispatched. Use the tracking ID below to follow your shipment.
+          </p>
+        </td>
+      </tr>
+
+      <!-- Tracking Highlight -->
+      {% if order.tracking_id %}
+      <tr>
+        <td style="padding:32px 40px 0;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#111;border:1px solid #c9a96e;">
+            <tr>
+              <td style="padding:24px;text-align:center;">
+                <p style="margin:0 0 8px;font-size:10px;text-transform:uppercase;letter-spacing:0.25em;color:#c9a96e;font-weight:700;">Tracking ID</p>
+                <p style="margin:0;font-size:24px;font-weight:700;color:#fff;letter-spacing:0.1em;">{{ order.tracking_id }}</p>
+                <p style="margin:10px 0 0;font-size:11px;color:#888;">Use this ID with your courier to track the shipment</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      {% endif %}
+
+      <!-- Order Details -->
+      <tr>
+        <td style="padding:24px 40px 32px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f7f4;border:1px solid #e8e0d4;">
+            <tr>
+              <td style="padding:20px 24px;border-bottom:1px solid #e8e0d4;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td>
+                      <p style="margin:0;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#888;">Order Number</p>
+                      <p style="margin:4px 0 0;font-size:18px;font-weight:700;color:#111;">#{{ order.id }}</p>
+                    </td>
+                    <td align="right">
+                      <p style="margin:0;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#888;">Total</p>
+                      <p style="margin:4px 0 0;font-size:16px;font-weight:700;color:#111;">&#8377;{{ order.total_amount }}</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            {% if order.seller_remark %}
+            <tr>
+              <td style="padding:16px 24px;background:#fffdf7;">
+                <p style="margin:0 0 6px;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#c9a96e;font-weight:700;">Message from Us</p>
+                <p style="margin:0;font-size:13px;color:#444;line-height:1.7;font-style:italic;">{{ order.seller_remark }}</p>
+              </td>
+            </tr>
+            {% endif %}
+            <tr>
+              <td style="padding:16px 24px;background:#f0ece4;border-top:1px solid #e8e0d4;">
+                <p style="margin:0;font-size:12px;color:#777;">Shipping to: <strong style="color:#333;">{{ order.full_name }}, {{ order.city }}, {{ order.state }}</strong></p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Divider -->
+      <tr><td style="padding:0 40px;"><div style="height:1px;background:#f0f0f0;"></div></td></tr>
+
+      <!-- Footer -->
+      <tr>
+        <td style="padding:32px 40px;text-align:center;">
+          <p style="margin:0 0 6px;font-size:12px;color:#888;">Questions? We're here to help.</p>
+          <p style="margin:0;font-size:12px;color:#555;"><a href="https://smokeking.in/contact/" style="color:#c9a96e;text-decoration:none;">smokeking.in/contact</a></p>
+          <p style="margin:24px 0 0;font-size:10px;color:#bbb;letter-spacing:0.15em;text-transform:uppercase;">SmokeKing.in &nbsp;|&nbsp; Premium Smoking Accessories</p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>
